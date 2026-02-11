@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_图层_2" data-name="图层 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 41 31">
+  <defs>
+    <style>
+      .cls-1 {
+        filter: url(#outer-glow-4);
+        opacity: .5;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9, .cls-10 {
+        stroke-width: 0px;
+      }
+
+      .cls-1, .cls-3, .cls-6 {
+        fill: #ff9319;
+      }
+
+      .cls-2 {
+        filter: url(#outer-glow-7);
+      }
+
+      .cls-2, .cls-3 {
+        opacity: .3;
+      }
+
+      .cls-2, .cls-5, .cls-7, .cls-8 {
+        fill: #4cfafe;
+      }
+
+      .cls-3 {
+        filter: url(#outer-glow-3);
+      }
+
+      .cls-4 {
+        filter: url(#outer-glow-1);
+      }
+
+      .cls-4, .cls-10 {
+        fill: #000714;
+      }
+
+      .cls-5 {
+        filter: url(#outer-glow-6);
+      }
+
+      .cls-11, .cls-6 {
+        opacity: .2;
+      }
+
+      .cls-6 {
+        filter: url(#outer-glow-5);
+      }
+
+      .cls-7 {
+        filter: url(#outer-glow-2);
+      }
+
+      .cls-7, .cls-8 {
+        opacity: .8;
+      }
+
+      .cls-8 {
+        filter: url(#outer-glow-8);
+      }
+    </style>
+    <filter id="outer-glow-1" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur" stdDeviation="1"/>
+      <feFlood flood-color="#008dff" flood-opacity="1"/>
+      <feComposite in2="blur" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="outer-glow-2" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur-2" stdDeviation="1"/>
+      <feFlood flood-color="#008dff" flood-opacity="1"/>
+      <feComposite in2="blur-2" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="outer-glow-3" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur-3" stdDeviation="1"/>
+      <feFlood flood-color="#ff551a" flood-opacity="1"/>
+      <feComposite in2="blur-3" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="outer-glow-4" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur-4" stdDeviation="1"/>
+      <feFlood flood-color="#ff551a" flood-opacity="1"/>
+      <feComposite in2="blur-4" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="outer-glow-5" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur-5" stdDeviation="1"/>
+      <feFlood flood-color="#ff551a" flood-opacity="1"/>
+      <feComposite in2="blur-5" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="outer-glow-6" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur-6" stdDeviation="1"/>
+      <feFlood flood-color="#008dff" flood-opacity="1"/>
+      <feComposite in2="blur-6" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="outer-glow-7" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur-7" stdDeviation="1"/>
+      <feFlood flood-color="#008dff" flood-opacity="1"/>
+      <feComposite in2="blur-7" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="outer-glow-8" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur-8" stdDeviation="1"/>
+      <feFlood flood-color="#008dff" flood-opacity="1"/>
+      <feComposite in2="blur-8" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="_图元" data-name="图元">
+    <g id="_静态服务器" data-name="静态服务器">
+      <g>
+        <polygon class="cls-10" points="1.95 1.09 29.73 17.13 29.73 23.05 1.95 7.01 1.95 1.09"/>
+        <polygon class="cls-4" points="37.53 21.52 37.53 27.43 30.53 23.39 30.53 17.48 37.53 21.52"/>
+        <polygon class="cls-7" points="37.53 21.52 37.53 27.43 30.53 23.39 30.53 17.48 37.53 21.52"/>
+        <g>
+          <path class="cls-3" d="m3.51,3.7l3.27,1.89v2.6s-3.27-1.89-3.27-1.89v-2.6Z"/>
+          <path class="cls-1" d="m7.64,6.07l3.27,1.89v2.6s-3.27-1.89-3.27-1.89v-2.6Z"/>
+          <path class="cls-6" d="m11.91,8.52l3.27,1.89v2.6s-3.27-1.89-3.27-1.89v-2.6Z"/>
+          <path class="cls-5" d="m16.49,11.14l3.27,1.89v2.6s-3.27-1.89-3.27-1.89v-2.6Z"/>
+          <path class="cls-2" d="m20.62,13.5l3.27,1.89v2.6s-3.27-1.89-3.27-1.89v-2.6Z"/>
+          <path class="cls-8" d="m24.89,15.95l3.27,1.89v2.6s-3.27-1.89-3.27-1.89v-2.6Z"/>
+        </g>
+      </g>
+      <g class="cls-11">
+        <path class="cls-9" d="m10.01,16.82c-.09.2-.21.42-.35.67-.14.25-.29.51-.45.77s-.32.52-.48.76c-.16.25-.31.47-.45.67l-1.25-.6c.14-.19.3-.41.46-.65.17-.24.32-.48.48-.73.15-.25.29-.49.42-.73.13-.24.23-.45.31-.63l1.3.46Zm2.13-.98v2.2c0,.26-.02.47-.07.63s-.13.29-.24.39c-.11.1-.25.18-.43.24-.18.06-.39.12-.65.18l-.63.15-.44-1.38.48-.12c.19-.05.31-.1.39-.15.07-.05.11-.15.11-.29v-1.66l-2.99.39.31-4.13c.33-.04.68-.09,1.05-.15.37-.06.75-.12,1.13-.18.38-.06.76-.13,1.14-.21.38-.07.75-.15,1.1-.22s.69-.15,1-.22c.31-.07.59-.14.83-.21l.3,1.4c-.33.08-.7.16-1.11.25-.41.09-.84.18-1.29.27-.45.09-.91.18-1.39.26-.47.09-.93.17-1.38.24l-.1,1.36,1.38-.18v-1.18l1.49-.16v1.15l2.63-.35v1.32l-2.63.35Zm1.45-.12c.09.1.21.24.35.42.14.18.29.37.44.58.16.21.31.42.46.64s.29.43.41.63l-1.26.97c-.1-.19-.21-.4-.35-.62-.13-.22-.27-.44-.42-.66-.15-.21-.29-.42-.43-.61-.14-.19-.27-.35-.39-.48l1.19-.87Z"/>
+        <path class="cls-9" d="m23.64,13.14v1.18l-7.82,1.03v-1.18l1.75-.23.13-.52-1.28.17v-1.01l1.52-.2.11-.47-1.82.24v-1.17l6.99-.92v1.17l-3.66.48-.11.47,3.2-.42-.08,1.52,1.07-.14Zm-7.05,2.49l6.27-.83v3.01l-6.27.83v-3.01Zm1.38,1.65l3.44-.45v-.69l-3.44.45v.69Zm1.11-3.54l2.07-.27.03-.51-1.98.26-.12.52Z"/>
+        <path class="cls-9" d="m27.21,14.55c-.09.2-.21.42-.35.67-.14.25-.29.51-.45.77s-.32.52-.48.76c-.16.25-.31.47-.45.67l-1.25-.6c.14-.19.3-.41.46-.65.17-.24.32-.48.48-.73.15-.25.29-.49.42-.73.13-.24.23-.45.31-.63l1.3.46Zm2.13-.98v2.2c0,.26-.02.47-.07.63s-.13.29-.24.39c-.11.1-.25.18-.43.24-.18.06-.39.12-.65.18l-.63.15-.44-1.38.48-.12c.19-.05.31-.1.39-.15.07-.05.11-.15.11-.29v-1.66l-2.99.39.31-4.13c.33-.04.68-.09,1.05-.15.37-.06.75-.12,1.13-.18.38-.06.76-.13,1.14-.21.38-.07.75-.15,1.1-.22s.69-.15,1-.22c.31-.07.59-.14.83-.21l.3,1.4c-.33.08-.7.16-1.11.25-.41.09-.84.18-1.29.27-.45.09-.91.18-1.39.26-.47.09-.93.17-1.38.24l-.1,1.36,1.38-.18v-1.18l1.49-.16v1.15l2.63-.35v1.32l-2.63.35Zm1.45-.12c.09.1.21.24.35.42.14.18.29.37.44.58.16.21.31.42.46.64s.29.43.41.63l-1.26.97c-.1-.19-.21-.4-.35-.62-.13-.22-.27-.44-.42-.66-.15-.21-.29-.42-.43-.61-.14-.19-.27-.35-.39-.48l1.19-.87Z"/>
+      </g>
+    </g>
+  </g>
+</svg>
