@@ -1,8 +1,8 @@
-name: Deploy Vue to GitHub Pages
+name: Deploy Vue to GitHub Pages with pnpm
 
 on:
   push:
-    branches: ["master"]  # 根据你的分支名修改
+    branches: ["master"]
   workflow_dispatch:
 
 permissions:
@@ -17,23 +17,47 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # 配置 pnpm 缓存
+    defaults:
+      run:
+        shell: bash
+        
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8  # 指定 pnpm 版本，或使用 latest
+          run_install: false
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'  # 或你 package.json 中指定的版本
-          cache: 'npm'
+          node-version: '18'
+          cache: 'pnpm'  # 使用 pnpm 缓存
+      
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
+      
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
       
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile  # 使用 pnpm 安装依赖
       
       - name: Build with Vite
-        run: npm run build
+        run: pnpm run build
         env:
-          # 设置正确的 BASE_URL，这样 Vite 会使用正确的 base
           NODE_ENV: production
           # 根据仓库名动态设置 base
           BASE_URL: /${{ github.event.repository.name }}/
@@ -44,7 +68,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist  # Vite 默认输出到 dist 目录
+          path: ./dist
 
   deploy:
     environment:
