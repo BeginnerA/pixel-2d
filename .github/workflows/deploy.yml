@@ -1,9 +1,18 @@
-name: Deploy Vue to GitHub Pages with pnpm
+name: Deploy Vue to GitHub Pages
 
 on:
   push:
     branches: ["master"]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -20,9 +29,8 @@ jobs:
         with:
           node-version: '22'
 
-      # 使用无锁文件模式（最简单的解决方案）
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install
 
       - name: Build with Vite
         run: pnpm run build
@@ -30,15 +38,22 @@ jobs:
           NODE_ENV: production
           BASE_URL: /${{ github.event.repository.name }}/
 
-      # 对于 GitHub Pages，创建 .nojekyll 文件很重要
+      # 添加 .nojekyll 文件防止 Jekyll 处理
       - name: Create .nojekyll
-        run: touch dist/.nojekyll
+        run: echo '' > dist/.nojekyll
 
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          branch: gh-pages  # 部署到 gh-pages 分支
-          folder: dist
-          clean: true
+          path: ./dist
 
-# 不需要额外的 deploy job，直接部署到 gh-pages 分支
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
