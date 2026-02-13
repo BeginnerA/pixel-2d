@@ -11,29 +11,29 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Setup pnpm
         run: npm install -g pnpm
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      
+          node-version: '22'
+
       # 使用无锁文件模式（最简单的解决方案）
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
-      
+
       - name: Build with Vite
         run: pnpm run build
         env:
           NODE_ENV: production
           BASE_URL: /${{ github.event.repository.name }}/
-      
+
       # 对于 GitHub Pages，创建 .nojekyll 文件很重要
       - name: Create .nojekyll
         run: touch dist/.nojekyll
-      
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
