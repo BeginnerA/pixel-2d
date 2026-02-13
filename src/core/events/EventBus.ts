@@ -140,7 +140,7 @@ export class EventBus {
    */
   emitSync<T = any>(event: string, data?: T): void {
     this.emit(event, data).catch((err) => {
-      console.error(`[EventBus] Error in event "${event}":`, err)
+      console.error(`[EventBus] 事件中的错误 "${event}":`, err)
     })
   }
 
@@ -149,6 +149,14 @@ export class EventBus {
    */
   clear(): void {
     this.listeners.clear()
+  }
+
+  /**
+   * 销毁事件总线
+   */
+  destroy(): void {
+    this.clear()
+    console.log('[EventBus] 已销毁')
   }
 
   /**

@@ -4,7 +4,7 @@
  * @author MC.Yang
  */
 
-import { EventBus } from '../events/EventBus'
+import { EventBus } from '@/core'
 
 /** 插件元数据 */
 export interface PluginMetadata {
@@ -83,7 +83,7 @@ export class PluginManager {
     const { id } = plugin.metadata
 
     if (this.plugins.has(id)) {
-      throw new Error(`[PluginManager] Plugin "${id}" already registered`)
+      throw new Error(`[PluginManager] 插件 "${id}" 已注册`)
     }
 
     this.plugins.set(id, {
@@ -107,11 +107,11 @@ export class PluginManager {
   async activate(pluginId: string): Promise<void> {
     const descriptor = this.plugins.get(pluginId)
     if (!descriptor) {
-      throw new Error(`[PluginManager] Plugin "${pluginId}" not found`)
+      throw new Error(`[PluginManager] 插件 "${pluginId}" 未找到`)
     }
 
     if (descriptor.state === PluginState.Activated) {
-      console.warn(`[PluginManager] Plugin "${pluginId}" already activated`)
+      console.warn(`[PluginManager] 插件 "${pluginId}" 已激活`)
       return
     }
 
@@ -120,7 +120,7 @@ export class PluginManager {
     for (const depId of dependencies) {
       const depDescriptor = this.plugins.get(depId)
       if (!depDescriptor) {
-        throw new Error(`[PluginManager] Dependency "${depId}" not found for plugin "${pluginId}"`)
+        throw new Error(`[PluginManager] 依赖关系 "${depId}" 找不到插件 "${pluginId}"`)
       }
       if (depDescriptor.state !== PluginState.Activated) {
         // 自动激活依赖
@@ -147,11 +147,11 @@ export class PluginManager {
   async deactivate(pluginId: string): Promise<void> {
     const descriptor = this.plugins.get(pluginId)
     if (!descriptor) {
-      throw new Error(`[PluginManager] Plugin "${pluginId}" not found`)
+      throw new Error(`[PluginManager] 插件 "${pluginId}" 未找到`)
     }
 
     if (descriptor.state !== PluginState.Activated) {
-      console.warn(`[PluginManager] Plugin "${pluginId}" is not activated`)
+      console.warn(`[PluginManager] 插件 "${pluginId}" 未激活`)
       return
     }
 
@@ -160,7 +160,7 @@ export class PluginManager {
       if (desc.state === PluginState.Activated) {
         const deps = desc.plugin.metadata.dependencies || []
         if (deps.includes(pluginId)) {
-          throw new Error(`[PluginManager] Cannot deactivate "${pluginId}", plugin "${id}" depends on it`)
+          throw new Error(`[PluginManager] 无法停用 "${pluginId}", 插件 "${id}" 取决于它`)
         }
       }
     }
@@ -243,6 +243,25 @@ export class PluginManager {
    */
   getAllPlugins(): PluginMetadata[] {
     return Array.from(this.plugins.values()).map((d) => d.plugin.metadata)
+  }
+
+  /**
+   * 初始化插件管理器
+   */
+  async initialize(): Promise<void> {
+    // 可以在这里进行初始化工作
+    this.eventBus.emitSync('plugin-manager:initialized', {})
+  }
+
+  /**
+   * 销毁插件管理器
+   */
+  destroy(): void {
+    this.deactivateAll().catch((error) => {
+      console.error('[PluginManager] 销毁过程中出错:', error)
+    })
+    this.plugins.clear()
+    this.eventBus.emitSync('plugin-manager:destroyed', {})
   }
 
   /**

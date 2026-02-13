@@ -39,11 +39,7 @@ export function setStorage(key: string, value: any, type: StorageType = 'local')
  * @param type 存储类型，默认 'local'
  * @returns 值
  */
-export function getStorage<T = any>(
-  key: string,
-  defaultValue?: T,
-  type: StorageType = 'local'
-): T | undefined {
+export function getStorage<T = any>(key: string, defaultValue?: T, type: StorageType = 'local'): T | undefined {
   try {
     const storage = getStorage(type)
     const item = storage.getItem(key)

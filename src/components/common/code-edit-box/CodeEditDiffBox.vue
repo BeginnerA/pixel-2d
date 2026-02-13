@@ -10,13 +10,12 @@
       <slot name="footer"></slot>
     </footer>
   </div>
-
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {EditorDiffProps} from './code-editor-type';
-import * as monaco from 'monaco-editor';
+import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { EditorDiffProps } from './code-editor-type'
+import * as monaco from 'monaco-editor'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
@@ -38,23 +37,23 @@ self.MonacoEnvironment = {
       return new tsWorker()
     }
     return new EditorWorker()
-  }
+  },
 }
 
 export default defineComponent({
   name: 'CodeDiffEditor',
   props: EditorDiffProps,
   setup(props) {
-    let editor: monaco.editor.IStandaloneDiffEditor;
-    let codeEditDiffBox = ref();
-    let monacoEditor = ref();
+    let editor: monaco.editor.IStandaloneDiffEditor
+    let codeEditDiffBox = ref()
+    let monacoEditor = ref()
     let defaultOpts = {
       value: '', // 编辑器的值
       roundedSelection: true, // 右侧不显示编辑器预览框
       autoIndent: true, // 自动缩进
       language: props.language,
       theme: props.theme,
-    };
+    }
 
     const init = () => {
       monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
@@ -68,93 +67,71 @@ export default defineComponent({
       // 生成编辑器配置
       const editorOptions = Object.assign(defaultOpts, props.opts)
       // 初始化编辑器实例
-      editor = monaco.editor.createDiffEditor(
-          codeEditDiffBox.value,
-          editorOptions as any
-      )
+      editor = monaco.editor.createDiffEditor(codeEditDiffBox.value, editorOptions as any)
       editor.setModel({
         // oldValue 为以前的值
-        original: monaco.editor.createModel(
-            props.oldValue,
-            editorOptions.language
-        ),
+        original: monaco.editor.createModel(props.oldValue, editorOptions.language),
         // oldValue 为新的值
-        modified: monaco.editor.createModel(
-            props.newValue,
-            editorOptions.language
-        )
+        modified: monaco.editor.createModel(props.newValue, editorOptions.language),
       })
     }
 
     watch(
-        () => props.opts,
-        () => {
-          init();
-        },
-        {deep: true}
+      () => props.opts,
+      () => {
+        init()
+      },
+      { deep: true }
     )
 
     watch(
-        () => props.newValue,
-        newValue => {
-          if (editor) {
-            editor.setModel({
-              // oldValue 为以前的值
-              original: monaco.editor.createModel(
-                  props.oldValue,
-                  props.language
-              ),
-              // oldValue 为新的值
-              modified: monaco.editor.createModel(
-                  newValue,
-                  props.language
-              )
-            })
-          }
-        },
-        {deep: true}
+      () => props.newValue,
+      (newValue) => {
+        if (editor) {
+          editor.setModel({
+            // oldValue 为以前的值
+            original: monaco.editor.createModel(props.oldValue, props.language),
+            // oldValue 为新的值
+            modified: monaco.editor.createModel(newValue, props.language),
+          })
+        }
+      },
+      { deep: true }
     )
 
     watch(
-        () => props.oldValue,
-        oldValue => {
-          if (editor) {
-            editor.setModel({
-              // oldValue 为以前的值
-              original: monaco.editor.createModel(
-                  oldValue,
-                  props.language
-              ),
-              // oldValue 为新的值
-              modified: monaco.editor.createModel(
-                  props.newValue,
-                  props.language
-              )
-            })
-          }
-        },
-        {deep: true}
-    );
+      () => props.oldValue,
+      (oldValue) => {
+        if (editor) {
+          editor.setModel({
+            // oldValue 为以前的值
+            original: monaco.editor.createModel(oldValue, props.language),
+            // oldValue 为新的值
+            modified: monaco.editor.createModel(props.newValue, props.language),
+          })
+        }
+      },
+      { deep: true }
+    )
 
     onBeforeUnmount(() => {
-      editor.dispose();
+      editor.dispose()
     })
 
     onMounted(() => {
-      init();
+      init()
     })
 
     /**
      * 供父组件调用手动获取值
      */
     function getVal() {
-      return monacoEditor.value;
+      return monacoEditor.value
     }
 
-    return {codeEditDiffBox, getVal};
-  }
+    return { codeEditDiffBox, getVal }
+  },
 })
-
 </script>
 
 <style scoped>

@@ -2,46 +2,49 @@
   <div class="editor2d-props">
     <!-- 属性面板 -->
     <div class="props-tabs">
-      <t-tabs :drag-sort="tabsConfig.dragSort" :value="activeTabsKey"
-              @drag-sort="onGraphicsTabDragend"
-              @change="onGraphicsTabChange">
+      <t-tabs
+        :drag-sort="tabsConfig.dragSort"
+        :value="activeTabsKey"
+        @drag-sort="onGraphicsTabDragend"
+        @change="onGraphicsTabChange"
+      >
         <t-tab-panel
-            v-for="panel in panelTabs"
-            :key="panel.key"
-            :value="panel.key"
-            :label="panel.label"
-            :draggable="panel.draggable"
+          v-for="panel in panelTabs"
+          :key="panel.key"
+          :value="panel.key"
+          :label="panel.label"
+          :draggable="panel.draggable"
         >
           <div class="props-list">
             <template v-if="activeTabsKey === 'map_drawing_config'">
-              <map-drawing-config/>
+              <map-drawing-config />
             </template>
             <template v-if="activeTabsKey === 'map_comm_config'">
-              <map-comm-config/>
+              <map-comm-config />
             </template>
 
             <template v-if="activeTabsKey === 'pen_appearance_config'">
-              <pen-appearance-config :model-value="editorPen"/>
+              <pen-appearance-config :model-value="editorPen" />
             </template>
             <template v-if="activeTabsKey === 'pen_event_config'">
-              <pen-event-config :model-value="editorPen"/>
+              <pen-event-config :model-value="editorPen" />
             </template>
             <template v-if="activeTabsKey === 'pen_effect_config'">
-              <pen-effect-config :model-value="editorPen"/>
+              <pen-effect-config :model-value="editorPen" />
             </template>
             <template v-if="activeTabsKey === 'pen_data_config'">
-              <pen-data-config :model-value="editorPen"/>
+              <pen-data-config :model-value="editorPen" />
             </template>
 
             <template v-if="activeTabsKey === 'pen_multi_appearance_config'">
-              <pen-multi-appearance-config :model-value="activePens"/>
+              <pen-multi-appearance-config :model-value="activePens" />
             </template>
 
             <template v-if="activeTabsKey === 'map_layout_config'">
-              <map-layout-config/>
+              <map-layout-config />
             </template>
             <template v-if="activeTabsKey === 'map_structure_config'">
-              <map-structure-config :model-value="editorPen" @change="changeActive"/>
+              <map-structure-config :model-value="editorPen" @change="changeActive" />
             </template>
           </div>
         </t-tab-panel>
@@ -51,21 +54,28 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, reactive, ref} from "vue";
-import {TabsProps} from "tdesign-vue-next";
-import MapDrawingConfig from "../props/map-props/map-drawing-config.vue";
-import MapLayoutConfig from "../props/map-props/map-layout-config.vue";
-import MapCommConfig from "../props/map-props/map-comm-config.vue";
-import MapStructureConfig from "../props/map-props/map-structure-config.vue";
-import PenAppearanceConfig from "../props/pen-props/pen-appearance-config.vue";
-import PenEventConfig from "../props/pen-props/pen-event-config.vue";
-import PenEffectConfig from "../props/pen-props/pen-effect-config.vue";
-import PenDataConfig from "../props/pen-props/pen-data-config.vue";
-import PenMultiAppearanceConfig from "../props/pen-multi-props/pen-multi-appearance-config.vue";
-import {Editor2DCache} from "../core/editor2d-local-storage";
-import {globalEditor2DPen} from "../core/editor2d-global-data";
-import {PROPS_TABS_CONFIG as propsTabsConfig,} from "../props/props"
-import {Editor2DPen, PropsTab, PropsTabsConfig} from "../core/editor2d-global-type";
+import { onMounted, ref, inject, computed } from 'vue'
+import { TabsProps } from 'tdesign-vue-next'
+import MapDrawingConfig from '../props/map-props/map-drawing-config.vue'
+import MapLayoutConfig from '../props/map-props/map-layout-config.vue'
+import MapCommConfig from '../props/map-props/map-comm-config.vue'
+import MapStructureConfig from '../props/map-props/map-structure-config.vue'
+import PenAppearanceConfig from '../props/pen-props/pen-appearance-config.vue'
+import PenEventConfig from '../props/pen-props/pen-event-config.vue'
+import PenEffectConfig from '../props/pen-props/pen-effect-config.vue'
+import PenDataConfig from '../props/pen-props/pen-data-config.vue'
+import PenMultiAppearanceConfig from '../props/pen-multi-props/pen-multi-appearance-config.vue'
+import { Editor2DCache } from '../core/editor2d-local-storage'
+import { globalEditor2DPen } from '../core/editor2d-global-data'
+import { PROPS_TABS_CONFIG as propsTabsConfig } from '../props/props'
+import { Editor2DPen, PropsTab, PropsTabsConfig } from '../core/editor2d-global-type'
+import { EditorEvents } from '@/core'
+
+// 注入编辑器实例
+const editor = inject<any>('editorCore')
+
+// 使用计算属性确保响应式
+const editorCore = computed(() => editor?.value)
 
 /**
  * 防抖函数 - 限制高频操作
@@ -73,47 +83,54 @@ import {Editor2DPen, PropsTab, PropsTabsConfig} from "../core/editor2d-global-ty
  * @param delay 延迟时间(毫秒)
  */
 function debounce<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let timeoutId: ReturnType<typeof setTimeout> | null = null
   return (...args: Parameters<T>) => {
     if (timeoutId) {
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId)
     }
     timeoutId = setTimeout(() => {
-      func(...args);
-      timeoutId = null;
-    }, delay);
-  };
+      func(...args)
+      timeoutId = null
+    }, delay)
+  }
 }
 
 // 创建防抖的保存函数(延迟 500ms)
 const debouncedSaveCanvas = debounce(() => {
-  new Editor2DCache().saveCanvas();
-}, 500);
-
+  new Editor2DCache().saveCanvas()
+}, 500)
 
 // 图元组件分类配置
-let tabsConfig = ref<PropsTabsConfig>(propsTabsConfig).value;
+let tabsConfig = ref<PropsTabsConfig>(propsTabsConfig).value
 // 图元组件分类数据
-let panelTabs = ref<Array<PropsTab>>([]);
+let panelTabs = ref<Array<PropsTab>>([])
 // 激活图元分类
-let recentActiveTabsKey = tabsConfig.activeKey;
-let activeTabsKey = ref(tabsConfig.activeKey);
+let recentActiveTabsKey = tabsConfig.activeKey
+let activeTabsKey = ref(tabsConfig.activeKey)
 // 图元选中状态
-let activePenStatus = ref(false);
-let multiPenStatus = ref(false);
+let activePenStatus = ref(false)
+let multiPenStatus = ref(false)
 // 选中图元
-let activePens = reactive([]);
+let activePens = ref<any[]>([])
 // 编辑中的图元
-let editorPen = reactive<Editor2DPen>(globalEditor2DPen);
+let editorPen = ref<Editor2DPen>(globalEditor2DPen)
+
+// 获取meta2d实例的辅助函数
+function getMeta2d() {
+  return editorCore.value?.getContext()?.meta2d
+}
 
 /**
  * 改变选中节点
  * @param pen 节点
  */
 function changeActive(pen: any) {
-  meta2d.active([pen]);
-  meta2d.render();
-  editorPen = pen;
+  const meta2d = getMeta2d()
+  if (meta2d) {
+    meta2d.active([pen])
+    meta2d.render()
+  }
+  editorPen = pen
 }
 
 /**
@@ -121,21 +138,21 @@ function changeActive(pen: any) {
  * @param currentIndex 当前索引
  * @param targetIndex 目标索引
  */
-const onGraphicsTabDragend: TabsProps['onDragSort'] = ({currentIndex, targetIndex}) => {
-  [panelTabs.value[currentIndex], panelTabs.value[targetIndex]] = [
+const onGraphicsTabDragend: TabsProps['onDragSort'] = ({ currentIndex, targetIndex }) => {
+  ;[panelTabs.value[currentIndex], panelTabs.value[targetIndex]] = [
     panelTabs.value[targetIndex],
     panelTabs.value[currentIndex],
-  ];
-};
+  ]
+}
 
 /**
  * 2D编辑器图形库菜单选项卡选中事件
  * @param activeTabs 激活卡片
  */
 const onGraphicsTabChange: TabsProps['onChange'] = (activeTabs: string | number) => {
-  activeTabsKey.value = activeTabs;
-  recentActiveTabsKey = activeTabs;
-};
+  activeTabsKey.value = activeTabs
+  recentActiveTabsKey = activeTabs
+}
 
 /**
  * 得到要显示的配置选项卡片
@@ -143,84 +160,139 @@ const onGraphicsTabChange: TabsProps['onChange'] = (activeTabs: string | number)
  */
 function showTabs(keys: Array<string>) {
   if (keys.includes(recentActiveTabsKey as string)) {
-    activeTabsKey.value = recentActiveTabsKey;
+    activeTabsKey.value = recentActiveTabsKey
   } else {
-    activeTabsKey.value = keys[0];
+    activeTabsKey.value = keys[0]
   }
-  panelTabs.value = tabsConfig.tabs?.filter(item => keys.includes(item.key as string)) ?? [];
+  panelTabs.value = tabsConfig.tabs?.filter((item) => keys.includes(item.key as string)) ?? []
 }
 
 /**
  * 初始化
  */
 function init() {
-  showTabs(['map_drawing_config', 'map_comm_config', 'map_layout_config', 'map_structure_config']);
+  showTabs(['map_drawing_config', 'map_comm_config', 'map_layout_config', 'map_structure_config'])
+}
+
+/**
+ * 处理选择变更
+ * @param pens 选中的图元
+ */
+function handleSelectionChange(pens: any[]) {
+  const meta2d = getMeta2d()
+  if (!meta2d) return
+
+  let locked = meta2d.store.data.locked
+  if (locked !== 0) {
+    // 当前状态非编辑状态
+    return
+  }
+  if (pens.length >= 1) {
+    activePenStatus.value = true
+    activePens.value = pens
+  }
+  multiPenStatus.value = pens.length > 1
+
+  // 只修改一个
+  if (activePenStatus.value) {
+    if (multiPenStatus.value) {
+      editorPen.value = activePens.value[activePens.value.length - 1]
+    } else {
+      editorPen.value = activePens.value[0]
+    }
+  }
+
+  if (activePenStatus.value && !multiPenStatus.value) {
+    showTabs([
+      'pen_appearance_config',
+      'pen_event_config',
+      'pen_effect_config',
+      'pen_data_config',
+      'map_structure_config',
+    ])
+  } else if (multiPenStatus.value) {
+    showTabs(['pen_multi_appearance_config', 'map_layout_config', 'map_structure_config'])
+  }
+}
+
+/**
+ * 设置事件监听
+ */
+function setupEventListeners() {
+  if (!editorCore.value) return
+
+  const eventBus = editorCore.value.getEventBus()
+
+  // 监听选择变更事件
+  eventBus.on(EditorEvents.SELECTION_CHANGED, (pens: any[]) => {
+    handleSelectionChange(pens)
+  })
+
+  // 监听数据变更事件
+  eventBus.on(EditorEvents.DATA_CHANGED, () => {
+    debouncedSaveCanvas()
+  })
+
+  console.log('[Props] 使用EditorCore注册事件监听器')
+}
+
+/**
+ * 处理取消选择
+ */
+function handleInactive() {
+  if (activePenStatus.value) {
+    activePenStatus.value = false
+    multiPenStatus.value = false
+    activePens.value = []
+    editorPen.value = {} as Editor2DPen
+    init()
+  }
 }
 
 onMounted(() => {
-  init();
+  init()
 
-  // 先注册编辑相关事件(在 active 之前),防止重复注册
-  meta2d.on('update', () => {
-    meta2d.emit('editPen');
-  });
-  meta2d.on('resizePens', () => {
-    meta2d.emit('editPen');
-  });
-  meta2d.on('rotatePens', () => {
-    meta2d.emit('editPen');
-  });
-  meta2d.on('valueUpdate', () => {
-    meta2d.emit('editPen');
-  });
-  meta2d.on('editPen', () => {
-    debouncedSaveCanvas(); // 使用防抖函数
-  });
+  // 优先使用EditorCore事件系统
+  if (editorCore.value) {
+    setupEventListeners()
+  } else {
+    // 回退到原有方式
+    const globalMeta2d = (window as any).meta2d
+    if (globalMeta2d) {
+      globalMeta2d.on('update', () => {
+        globalMeta2d.emit('editPen')
+      })
+      globalMeta2d.on('resizePens', () => {
+        globalMeta2d.emit('editPen')
+      })
+      globalMeta2d.on('rotatePens', () => {
+        globalMeta2d.emit('editPen')
+      })
+      globalMeta2d.on('valueUpdate', () => {
+        globalMeta2d.emit('editPen')
+      })
+      globalMeta2d.on('editPen', () => {
+        debouncedSaveCanvas() // 使用防抖函数
+      })
 
-  // 监听鼠标点击事件
-  meta2d.on('active', (pens) => {
-    let locked = meta2d.store.data.locked;
-    if (locked !== 0) {
-      // 当前状态非编辑状态
-      return
+      // 监听鼠标点击事件
+      globalMeta2d.on('active', (pens: any[]) => {
+        handleSelectionChange(pens)
+      })
+
+      console.warn('[Props] 回退到原有事件监听方式')
     }
-    if (pens.length >= 1) {
-      activePenStatus.value = true;
-      activePens = pens;
-    }
-    multiPenStatus.value = pens.length > 1;
+  }
 
-    // 只修改一个
-    if (activePenStatus.value) {
-      if (multiPenStatus.value) {
-        editorPen = activePens[activePens.length - 1];
-      } else {
-        editorPen = activePens[0];
-      }
-    }
-
-    if (activePenStatus.value && !multiPenStatus.value) {
-      showTabs(['pen_appearance_config', 'pen_event_config', 'pen_effect_config', 'pen_data_config', 'map_structure_config']);
-    } else if (multiPenStatus.value) {
-      showTabs(['pen_multi_appearance_config', 'map_layout_config', 'map_structure_config']);
-    }
-  });
-
-  meta2d.on('inactive', () => {
-    if (activePenStatus.value) {
-      activePenStatus.value = false;
-      multiPenStatus.value = false;
-      activePens = [];
-      editorPen = {};
-      init();
-    }
-  });
-});
-
+  // 监听取消选择事件
+  const meta2d = getMeta2d()
+  if (meta2d) {
+    meta2d.on('inactive', handleInactive)
+  }
+})
 </script>
 
 <style scoped lang="less">
-
 .editor2d-props {
   width: 265px;
   display: flex;

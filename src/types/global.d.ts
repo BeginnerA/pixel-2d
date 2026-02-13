@@ -1,6 +1,7 @@
 /**
  * 全局类型定义
  * @description Pixel-2D 项目的全局类型声明
+ * @author MC.Yang
  */
 
 import { Meta2d } from '@meta2d/core'
@@ -13,17 +14,17 @@ declare global {
   /**
    * Meta2D 核心实例
    */
-  var meta2d: Meta2d
+  let meta2d: Meta2d
 
   /**
    * Canvas2SVG 实例
    */
-  var C2S: any
+  let C2S: any
 
   /**
    * 全局事件总线
    */
-  var editor2DEvent: EventEmitter
+  let editor2DEvent: EventEmitter
 
   /**
    * 窗口对象扩展

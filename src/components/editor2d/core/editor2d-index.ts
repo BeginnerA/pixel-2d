@@ -1,6 +1,6 @@
 /*
- * @description: 2D编辑器入口
- * @author: MC.Yang
+ * @description 2D编辑器入口
+ * @author MC.Yang
  */
 import '../assets/js/marked.min.js'
 import '../assets/js/echarts.min.js'

@@ -3,35 +3,35 @@
     <!-- 外观 -->
     <t-collapse expand-icon-placement="right" :default-value="activeCollapse">
       <t-collapse-panel v-for="(item, index) in formListData" :value="item.key ? item.key : index" :header="item.title">
-        <generate-form :model-value="item.children"/>
+        <generate-form :model-value="item.children" />
       </t-collapse-panel>
     </t-collapse>
   </div>
 </template>
 <script setup lang="ts">
-import {computed, PropType, ref, watch} from 'vue';
-import {IValue} from "@meta2d/core/src/pen";
-import {MessagePlugin} from "tdesign-vue-next";
-import GenerateForm from "../../../common/form-list/GenerateForm.vue";
-import {Editor2DPen, Editor2DPropsMenu} from '../../core/editor2d-global-type';
-import {Editor2DCanvas} from "../../core/editor2d";
-import {CONFIG_LINE_DASH} from "../../core/editor2d-global-constant";
-import {globalEditor2DPen} from "../../core/editor2d-global-data";
+import { computed, PropType, ref, watch } from 'vue'
+import { IValue } from '@meta2d/core/src/pen'
+import { MessagePlugin } from 'tdesign-vue-next'
+import GenerateForm from '../../../common/form-list/GenerateForm.vue'
+import { Editor2DPen, Editor2DPropsMenu } from '../../core/editor2d-global-type'
+import { Editor2DCanvas } from '../../core/editor2d'
+import { CONFIG_LINE_DASH } from '../../core/editor2d-global-constant'
+import { globalEditor2DPen } from '../../core/editor2d-global-data'
 
 // 编辑中的图元
 let props = defineProps({
   modelValue: {
     type: Object as PropType<Editor2DPen | any>,
-    required: true
+    required: true,
   },
-});
-let editorPen = ref<Editor2DPen>(globalEditor2DPen);
+})
+let editorPen = ref<Editor2DPen>(globalEditor2DPen)
 // 激活的面板
-let activeCollapse = ref<Array<number>>([0]);
+let activeCollapse = ref<Array<number>>([0])
 // 画布配置
-let editor2DCanvas = new Editor2DCanvas();
+let editor2DCanvas = new Editor2DCanvas()
 // TODO 位置数据（当前版本位置需要动态计算获取）
-let penRect = ref<any>();
+let penRect = ref<any>()
 
 /**
  * 2D编辑器属性面板功能菜单调度函数
@@ -40,76 +40,86 @@ let penRect = ref<any>();
  */
 function setOptionFunc(prop: string, isFile?: boolean) {
   return (value: any) => {
-    let locked = meta2d.store.data.locked;
+    let locked = meta2d.store.data.locked
     if (locked !== 0) {
-      MessagePlugin.warning('当前状态非编辑状态不可编辑');
+      MessagePlugin.warning('当前状态非编辑状态不可编辑')
       return
     }
-    let penKey = prop;
-    let penVal = value;
+    let penKey = prop
+    let penVal = value
     switch (prop) {
       case 'x':
       case 'y':
       case 'width':
       case 'height':
-        value = penRect.value[prop];
-        break;
+        value = penRect.value[prop]
+        break
       case 'dash':
         CONFIG_LINE_DASH.map((_, v) => {
           if (value === v) {
-            penKey = 'lineDash';
-            penVal = JSON.parse(_.data);
+            penKey = 'lineDash'
+            penVal = JSON.parse(_.data)
           }
-        });
-        break;
+        })
+        break
       default:
-        break;
+        break
     }
 
-    let dataList: Array<IValue> = [];
+    let dataList: Array<IValue> = []
     if (['width', 'height'].includes(penKey) && editorPen.value.ratio) {
-      let width = editorPen.value.width || 0;
-      let height = editorPen.value.height || 0;
+      let width = editorPen.value.width || 0
+      let height = editorPen.value.height || 0
       if ('width' === penKey) {
-        dataList = [{
-          id: editorPen.value.id,
-          width: penVal,
-          height: penVal / width * height,
-        }];
+        dataList = [
+          {
+            id: editorPen.value.id,
+            width: penVal,
+            height: (penVal / width) * height,
+          },
+        ]
       } else if ('height' === penKey) {
-        dataList = [{
-          id: editorPen.value.id,
-          height: penVal,
-          width: penVal / height * width,
-        }];
+        dataList = [
+          {
+            id: editorPen.value.id,
+            height: penVal,
+            width: (penVal / height) * width,
+          },
+        ]
       }
     } else if (isFile) {
       if (penVal.length > 0) {
-        let file = penVal[0].raw as Blob;
+        let file = penVal[0].raw as Blob
         if (file) {
-          let fileUrl = URL.createObjectURL(file);
-          dataList = [{
-            id: editorPen.value.id,
-            [penKey]: fileUrl
-          }];
+          let fileUrl = URL.createObjectURL(file)
+          dataList = [
+            {
+              id: editorPen.value.id,
+              [penKey]: fileUrl,
+            },
+          ]
         }
       } else {
-        dataList = [{
-          id: editorPen.value.id,
-          [penKey]: '',
-        }];
+        dataList = [
+          {
+            id: editorPen.value.id,
+            [penKey]: '',
+          },
+        ]
       }
     } else {
-      dataList = [{
-        id: editorPen.value.id,
-        [penKey]: penVal
-      }];
+      dataList = [
+        {
+          id: editorPen.value.id,
+          [penKey]: penVal,
+        },
+      ]
     }
     if (dataList.length > 0) {
-      dataList.forEach(data => {
-        Object.assign(editorPen.value, data);
+      dataList.forEach((data) => {
+        Object.assign(editorPen.value, data)
       })
-      editor2DCanvas.setValue(dataList);
+      editor2DCanvas.setValue(dataList)
     }
   }
 }
@@ -118,7 +128,7 @@ function setOptionFunc(prop: string, isFile?: boolean) {
  * 属性面板菜单
  */
 const formListData = computed(() => {
-  return ref(PROPS_MENU_LIST).value;
+  return ref(PROPS_MENU_LIST).value
 })
 
 /**
@@ -133,7 +143,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         type: 'number',
         value: 'x',
         option: {
-          placeholder: 'px'
+          placeholder: 'px',
         },
         data: penRect,
         event: 'change',
@@ -144,7 +154,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         type: 'number',
         value: 'y',
         option: {
-          placeholder: 'px'
+          placeholder: 'px',
         },
         data: penRect,
         event: 'change',
@@ -156,7 +166,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'width',
         data: penRect,
         option: {
-          min: 0
+          min: 0,
         },
         event: 'change',
         action: setOptionFunc('width'),
@@ -183,7 +193,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'borderRadius',
         option: {
           placeholder: '<1为比例',
-          min: 0
+          min: 0,
         },
         data: editorPen,
         event: 'change',
@@ -198,7 +208,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('rotate')
+        action: setOptionFunc('rotate'),
       },
       {
         title: '内边距上',
@@ -209,7 +219,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('paddingTop')
+        action: setOptionFunc('paddingTop'),
       },
       {
         title: '内边距下',
@@ -220,7 +230,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('paddingBottom')
+        action: setOptionFunc('paddingBottom'),
       },
       {
         title: '内边距左',
@@ -231,7 +241,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('paddingLeft')
+        action: setOptionFunc('paddingLeft'),
       },
       {
         title: '内边距右',
@@ -242,7 +252,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('paddingRight')
+        action: setOptionFunc('paddingRight'),
       },
       {
         title: '进度',
@@ -252,11 +262,11 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
           placeholder: 'px',
           min: 0,
           step: 0.1,
-          max: 1
+          max: 1,
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('progress')
+        action: setOptionFunc('progress'),
       },
       {
         title: '垂直进度',
@@ -264,7 +274,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'verticalProgress',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('verticalProgress')
+        action: setOptionFunc('verticalProgress'),
       },
       {
         title: '水平翻转',
@@ -272,7 +282,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'flipX',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('flipX')
+        action: setOptionFunc('flipX'),
       },
       {
         title: '垂直翻转',
@@ -280,9 +290,9 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'flipY',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('flipY')
+        action: setOptionFunc('flipY'),
       },
-    ]
+    ],
   },
   {
     title: '样式',
@@ -297,7 +307,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('dash')
+        action: setOptionFunc('dash'),
       },
       {
         title: '连接样式',
@@ -307,22 +317,22 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
           list: [
             {
               label: '默认',
-              value: 'miter'
+              value: 'miter',
             },
             {
               label: '圆形',
-              value: 'round'
+              value: 'round',
             },
             {
               label: '斜角',
-              value: 'bevel'
-            }
-          ]
+              value: 'bevel',
+            },
+          ],
         },
         value: 'lineJoin',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('lineJoin')
+        action: setOptionFunc('lineJoin'),
       },
       {
         title: '末端样式',
@@ -332,22 +342,22 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
           list: [
             {
               label: '默认',
-              value: 'butt'
+              value: 'butt',
             },
             {
               label: '圆形',
-              value: 'round'
+              value: 'round',
             },
             {
               label: '方形',
-              value: 'square'
-            }
-          ]
+              value: 'square',
+            },
+          ],
         },
         value: 'lineCap',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('lineCap')
+        action: setOptionFunc('lineCap'),
       },
       {
         title: '颜色',
@@ -355,7 +365,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'color',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('color')
+        action: setOptionFunc('color'),
       },
       {
         title: '浮动颜色',
@@ -363,7 +373,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'hoverColor',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('hoverColor')
+        action: setOptionFunc('hoverColor'),
       },
       {
         title: '选中颜色',
@@ -371,7 +381,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'activeColor',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('activeColor')
+        action: setOptionFunc('activeColor'),
       },
       {
         title: '线条宽度',
@@ -379,7 +389,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'lineWidth',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('lineWidth')
+        action: setOptionFunc('lineWidth'),
       },
       {
         title: '背景颜色',
@@ -387,7 +397,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'background',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('background')
+        action: setOptionFunc('background'),
       },
       {
         title: '浮动背景颜色',
@@ -395,7 +405,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'hoverBackground',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('hoverBackground')
+        action: setOptionFunc('hoverBackground'),
       },
       {
         title: '选中背景颜色',
@@ -403,7 +413,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'activeBackground',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('activeBackground')
+        action: setOptionFunc('activeBackground'),
       },
       {
         title: '透明度',
@@ -412,11 +422,11 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         option: {
           min: 0,
           step: 0.1,
-          max: 1
+          max: 1,
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('globalAlpha')
+        action: setOptionFunc('globalAlpha'),
       },
       {
         title: '锚点颜色',
@@ -424,7 +434,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'anchorColor',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('anchorColor')
+        action: setOptionFunc('anchorColor'),
       },
       {
         title: '锚点半径',
@@ -433,11 +443,11 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         option: {
           min: 0,
           step: 1,
-          max: 10
+          max: 10,
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('anchorRadius')
+        action: setOptionFunc('anchorRadius'),
       },
       {
         title: '阴影颜色',
@@ -445,7 +455,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'shadowColor',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('shadowColor')
+        action: setOptionFunc('shadowColor'),
       },
       {
         title: '阴影模糊',
@@ -454,11 +464,11 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         option: {
           min: 0,
           step: 1,
-          max: Infinity
+          max: Infinity,
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('shadowBlur')
+        action: setOptionFunc('shadowBlur'),
       },
       {
         title: '阴影x偏移',
@@ -466,7 +476,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'shadowOffsetX',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('shadowOffsetX')
+        action: setOptionFunc('shadowOffsetX'),
       },
       {
         title: '阴影y偏移',
@@ -474,7 +484,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'shadowOffsetY',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('shadowOffsetY')
+        action: setOptionFunc('shadowOffsetY'),
       },
       {
         title: '文字阴影',
@@ -482,9 +492,9 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'textHasShadow',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('textHasShadow')
+        action: setOptionFunc('textHasShadow'),
       },
-    ]
+    ],
   },
   {
     title: '文字',
@@ -498,25 +508,25 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
           list: [
             {
               label: '宋体',
-              value: '宋体'
-            }, {
+              value: '宋体',
+            },
+            {
               label: '黑体',
-              value: '黑体'
-            }
-          ]
+              value: '黑体',
+            },
+          ],
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('fontFamily')
-
-      }, {
+        action: setOptionFunc('fontFamily'),
+      },
+      {
         title: '字体大小',
         type: 'number',
         value: 'fontSize',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('fontSize')
-
+        action: setOptionFunc('fontSize'),
       },
       {
         title: '字体颜色',
@@ -524,7 +534,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'textColor',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('textColor')
+        action: setOptionFunc('textColor'),
       },
       {
         title: '浮动字体颜色',
@@ -532,7 +542,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'hoverTextColor',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('hoverTextColor')
+        action: setOptionFunc('hoverTextColor'),
       },
       {
         title: '选中字体颜色',
@@ -540,7 +550,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'activeTextColor',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('activeTextColor')
+        action: setOptionFunc('activeTextColor'),
       },
       {
         title: '文字背景颜色',
@@ -548,7 +558,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'textBackground',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('textBackground')
+        action: setOptionFunc('textBackground'),
       },
       {
         title: '水平对齐',
@@ -559,19 +569,21 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
           list: [
             {
               label: '左对齐',
-              value: 'left'
-            }, {
+              value: 'left',
+            },
+            {
               label: '居中对齐',
-              value: 'center'
-            }, {
+              value: 'center',
+            },
+            {
               label: '右对齐',
-              value: 'right'
-            }
-          ]
+              value: 'right',
+            },
+          ],
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('textAlign')
+        action: setOptionFunc('textAlign'),
       },
       {
         title: '垂直对齐',
@@ -582,30 +594,32 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
           list: [
             {
               label: '顶部对齐',
-              value: 'top'
-            }, {
+              value: 'top',
+            },
+            {
               label: '居中对齐',
-              value: 'center'
-            }, {
+              value: 'center',
+            },
+            {
               label: '底部对齐',
-              value: 'bottom'
-            }
-          ]
+              value: 'bottom',
+            },
+          ],
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('textBaseline')
+        action: setOptionFunc('textBaseline'),
       },
       {
         title: '行高',
         type: 'number',
         option: {
-          step: 0.1
+          step: 0.1,
         },
         value: 'lineHeight',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('lineHeight')
+        action: setOptionFunc('lineHeight'),
       },
       {
         title: '换行',
@@ -616,24 +630,25 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
           list: [
             {
               label: '默认',
-              value: 'nowrap'
-            }, {
+              value: 'nowrap',
+            },
+            {
               label: '不换行',
-              value: 'nowrap'
-            }, {
+              value: 'nowrap',
+            },
+            {
               label: '回车换行',
-              value: 'pre-line'
+              value: 'pre-line',
             },
             {
               label: '永远换行',
-              value: 'break-all'
-            }
-          ]
+              value: 'break-all',
+            },
+          ],
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('whiteSpace')
-
+        action: setOptionFunc('whiteSpace'),
       },
       {
         title: '文字宽度',
@@ -644,8 +659,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('textWidth')
-
+        action: setOptionFunc('textWidth'),
       },
       {
         title: '文字高度',
@@ -656,7 +670,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('textHeight')
+        action: setOptionFunc('textHeight'),
       },
       {
         title: '超出省略',
@@ -664,7 +678,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'ellipsis',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('ellipsis')
+        action: setOptionFunc('ellipsis'),
       },
       {
         title: '隐藏文字',
@@ -672,7 +686,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'hiddenText',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('hiddenText')
+        action: setOptionFunc('hiddenText'),
       },
       {
         title: '文字内容',
@@ -680,9 +694,9 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'text',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('text')
-      }
-    ]
+        action: setOptionFunc('text'),
+      },
+    ],
   },
   {
     title: '图片',
@@ -692,11 +706,11 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         type: 'file',
         value: 'image',
         option: {
-          accept: 'image/*'
+          accept: 'image/*',
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('image', true)
+        action: setOptionFunc('image', true),
       },
       {
         title: '图片URL',
@@ -704,18 +718,18 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'image',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('image')
+        action: setOptionFunc('image'),
       },
       {
         title: '背景图片',
         type: 'file',
         value: 'backgroundImage',
         option: {
-          accept: 'image/*'
+          accept: 'image/*',
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('backgroundImage', true)
+        action: setOptionFunc('backgroundImage', true),
       },
       {
         title: '背景图片URL',
@@ -723,18 +737,18 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'backgroundImage',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('backgroundImage')
+        action: setOptionFunc('backgroundImage'),
       },
       {
         title: '描绘图片',
         type: 'file',
         value: 'strokeImage',
         option: {
-          accept: 'image/*'
+          accept: 'image/*',
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('strokeImage', true)
+        action: setOptionFunc('strokeImage', true),
       },
       {
         title: '描绘图片URL',
@@ -742,29 +756,29 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'strokeImage',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('strokeImage')
+        action: setOptionFunc('strokeImage'),
       },
       {
         title: '宽度',
         type: 'number',
         value: 'iconWidth',
         option: {
-          placeholder: '自适应'
+          placeholder: '自适应',
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('iconWidth')
+        action: setOptionFunc('iconWidth'),
       },
       {
         title: '高度',
         type: 'number',
         value: 'iconHeight',
         option: {
-          placeholder: '自适应'
+          placeholder: '自适应',
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('iconHeight')
+        action: setOptionFunc('iconHeight'),
       },
       {
         title: '保持比例',
@@ -772,7 +786,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'imageRatio',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('imageRatio')
+        action: setOptionFunc('imageRatio'),
       },
       {
         title: '水平偏移',
@@ -780,7 +794,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'iconLeft',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('iconLeft')
+        action: setOptionFunc('iconLeft'),
       },
       {
         title: '垂直偏移',
@@ -788,7 +802,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'iconTop',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('iconTop')
+        action: setOptionFunc('iconTop'),
       },
       {
         title: '对齐方式',
@@ -799,47 +813,47 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
           list: [
             {
               label: '上',
-              value: 'top'
+              value: 'top',
             },
             {
               label: '右',
-              value: 'right'
+              value: 'right',
             },
             {
               label: '下',
-              value: 'bottom'
+              value: 'bottom',
             },
             {
               label: '左',
-              value: 'left'
+              value: 'left',
             },
             {
               label: '左上',
-              value: 'left-top'
+              value: 'left-top',
             },
             {
               label: '右上',
-              value: 'right-top'
+              value: 'right-top',
             },
             {
               label: '左下',
-              value: 'left-bottom'
+              value: 'left-bottom',
             },
             {
               label: '右下',
-              value: 'right-bottom'
+              value: 'right-bottom',
             },
             {
               label: '居中',
-              value: 'center'
-            }
-          ]
+              value: 'center',
+            },
+          ],
         },
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('iconAlign')
-      }
-    ]
+        action: setOptionFunc('iconAlign'),
+      },
+    ],
   },
   {
     title: '禁止',
@@ -850,7 +864,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'disableInput',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('disableInput')
+        action: setOptionFunc('disableInput'),
       },
       {
         title: '禁止旋转',
@@ -858,7 +872,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'disableRotate',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('disableRotate')
+        action: setOptionFunc('disableRotate'),
       },
       {
         title: '禁止缩放',
@@ -866,7 +880,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'disableSize',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('disableSize')
+        action: setOptionFunc('disableSize'),
       },
       {
         title: '禁止锚点',
@@ -874,9 +888,9 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         value: 'disableAnchor',
         data: editorPen,
         event: 'change',
-        action: setOptionFunc('disableAnchor')
-      }
-    ]
+        action: setOptionFunc('disableAnchor'),
+      },
+    ],
   },
 ]
 
@@ -886,19 +900,18 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
  */
 function init(pen: Editor2DPen) {
   if (pen) {
-    editorPen.value = pen;
-    penRect.value = meta2d.getPenRect(pen);
+    editorPen.value = pen
+    penRect.value = meta2d.getPenRect(pen)
   }
 }
 
 watch(
-    () => props.modelValue,
-    (newValue) => {
-      if (newValue) {
-        init(newValue);
-      }
-    },
-    {immediate: true},
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue) {
+      init(newValue)
+    }
+  },
+  { immediate: true }
 )
-
 </script>

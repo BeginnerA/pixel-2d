@@ -80,12 +80,12 @@ export class Container {
   resolve<T>(identifier: ServiceIdentifier<T>): T {
     const descriptor = this.services.get(identifier)
     if (!descriptor) {
-      throw new Error(`Service not registered: ${String(identifier)}`)
+      throw new Error(`服务未注册: ${String(identifier)}`)
     }
 
     // 检测循环依赖
     if (this.resolving.has(identifier)) {
-      throw new Error(`Circular dependency detected: ${String(identifier)}`)
+      throw new Error(`检测到循环依赖关系: ${String(identifier)}`)
     }
 
     // 单例模式
@@ -138,7 +138,7 @@ export class Container {
       return (implementation as () => T)()
     }
 
-    throw new Error('Invalid implementation type')
+    throw new Error('无效的实现类型')
   }
 
   /**

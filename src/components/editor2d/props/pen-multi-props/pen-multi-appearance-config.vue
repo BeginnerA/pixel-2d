@@ -9,10 +9,18 @@
           <i title="底部对齐" class="iconfont icon-justification-bottom" @click="onAlignNodes('bottom')"></i>
           <i title="垂直居中" class="iconfont icon-vertical-centering" @click="onAlignNodes('center')"></i>
           <i title="水平居中" class="iconfont icon-horizontal-centering" @click="onAlignNodes('middle')"></i>
-          <i title="水平等分对齐" style="font-size: 20px; margin: 0 5px" class="iconfont icon-level-isometric-alignment"
-             @click="onSpaceBetween"></i>
-          <i title="垂直等分对齐" style="font-size: 20px; margin: 0 5px"
-             class="iconfont icon-vertical-isometric-alignment" @click="onSpaceBetweenColumn"></i>
+          <i
+            title="水平等分对齐"
+            style="font-size: 20px; margin: 0 5px"
+            class="iconfont icon-level-isometric-alignment"
+            @click="onSpaceBetween"
+          ></i>
+          <i
+            title="垂直等分对齐"
+            style="font-size: 20px; margin: 0 5px"
+            class="iconfont icon-vertical-isometric-alignment"
+            @click="onSpaceBetweenColumn"
+          ></i>
         </div>
       </t-collapse-panel>
       <t-collapse-panel header="对齐(参照第一个选中节点)">
@@ -23,10 +31,18 @@
           <i title="底部对齐" class="iconfont icon-justification-bottom" @click="onAlignNodesByFirst('bottom')"></i>
           <i title="垂直居中" class="iconfont icon-vertical-centering" @click="onAlignNodesByFirst('center')"></i>
           <i title="水平居中" class="iconfont icon-horizontal-centering" @click="onAlignNodesByFirst('middle')"></i>
-          <i title="相同大小" style="font-size: 20px; margin: 0 5px" class="iconfont icon-alike"
-             @click="onBeSameByFirst"></i>
-          <i title="格式刷" style="font-size: 20px; margin: 0 5px" class="iconfont icon-format-brush"
-             @click="onFormatPainterByFirst"></i>
+          <i
+            title="相同大小"
+            style="font-size: 20px; margin: 0 5px"
+            class="iconfont icon-alike"
+            @click="onBeSameByFirst"
+          ></i>
+          <i
+            title="格式刷"
+            style="font-size: 20px; margin: 0 5px"
+            class="iconfont icon-format-brush"
+            @click="onFormatPainterByFirst"
+          ></i>
         </div>
       </t-collapse-panel>
       <t-collapse-panel header="对齐(参照最后一个选中节点)">
@@ -37,10 +53,18 @@
           <i title="底部对齐" class="iconfont icon-justification-bottom" @click="onAlignNodesByLast('bottom')"></i>
           <i title="垂直居中" class="iconfont icon-vertical-centering" @click="onAlignNodesByLast('center')"></i>
           <i title="水平居中" class="iconfont icon-horizontal-centering" @click="onAlignNodesByLast('middle')"></i>
-          <i title="相同大小" style="font-size: 20px; margin: 0 5px" class="iconfont icon-alike"
-             @click="onBeSameByLast"></i>
-          <i title="格式刷" style="font-size: 20px; margin: 0 5px" class="iconfont icon-format-brush"
-             @click="onFormatPainterByLast"></i>
+          <i
+            title="相同大小"
+            style="font-size: 20px; margin: 0 5px"
+            class="iconfont icon-alike"
+            @click="onBeSameByLast"
+          ></i>
+          <i
+            title="格式刷"
+            style="font-size: 20px; margin: 0 5px"
+            class="iconfont icon-format-brush"
+            @click="onFormatPainterByLast"
+          ></i>
         </div>
       </t-collapse-panel>
     </t-collapse>
@@ -48,40 +72,40 @@
 </template>
 
 <script setup lang="ts">
-import {PropType, ref, watch} from "vue";
-import {Editor2DPen} from "../../core/editor2d-global-type";
+import { PropType, ref, watch } from 'vue'
+import { Editor2DPen } from '../../core/editor2d-global-type'
 
 // 选中的图元
 let props = defineProps({
   modelValue: {
     type: Array as PropType<Array<Editor2DPen> | any>,
-    required: true
+    required: true,
   },
-});
-let activePens = ref<Array<Editor2DPen>>([]);
+})
+let activePens = ref<Array<Editor2DPen>>([])
 // 激活的面板
-let activeCollapse = ref<Array<number>>([0, 1, 2]);
+let activeCollapse = ref<Array<number>>([0, 1, 2])
 
 /**
  * 参照框对齐
  * @param align 对齐方式
  */
 const onAlignNodes = (align: string) => {
-  meta2d.alignNodes(align, activePens.value as any);
-};
+  meta2d.alignNodes(align, activePens.value as any)
+}
 
 /**
  * 水平等分对齐
  */
 const onSpaceBetween = () => {
-  meta2d.spaceBetween();
+  meta2d.spaceBetween()
 }
 
 /**
  * 垂直等分对齐
  */
 const onSpaceBetweenColumn = () => {
-  meta2d.spaceBetweenColumn();
+  meta2d.spaceBetweenColumn()
 }
 
 /**
@@ -89,8 +113,8 @@ const onSpaceBetweenColumn = () => {
  * @param align 对齐方式
  */
 const onAlignNodesByFirst = (align: string) => {
-  meta2d.alignNodesByFirst(align, activePens.value as any);
-};
+  meta2d.alignNodesByFirst(align, activePens.value as any)
+}
 
 /**
  * 参照第一个选中节点相同大小
@@ -111,8 +135,8 @@ const onFormatPainterByFirst = () => {
  * @param align 对齐方式
  */
 const onAlignNodesByLast = (align: string) => {
-  meta2d.alignNodesByLast(align, activePens.value as any);
-};
+  meta2d.alignNodesByLast(align, activePens.value as any)
+}
 
 /**
  * 参照最后一个选中节点相同大小
@@ -134,22 +158,19 @@ const onFormatPainterByLast = () => {
  */
 function init(pens: Array<Editor2DPen>) {
   if (pens) {
-    activePens.value = pens;
+    activePens.value = pens
   }
 }
 
 watch(
-    () => props.modelValue,
-    (newValue) => {
-      if (newValue) {
-        init(newValue);
-      }
-    },
-    {immediate: true},
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue) {
+      init(newValue)
+    }
+  },
+  { immediate: true }
 )
-
 </script>
 
-<style scoped lang="less">
-
-</style>
+<style scoped lang="less"></style>

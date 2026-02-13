@@ -10,14 +10,13 @@
       <slot name="footer"></slot>
     </footer>
   </div>
-
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {EditorProps} from './code-editor-type';
-import {Dawn} from './dawn';
-import * as monaco from 'monaco-editor';
+import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { EditorProps } from './code-editor-type'
+import { Dawn } from './dawn'
+import * as monaco from 'monaco-editor'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
@@ -39,16 +38,16 @@ self.MonacoEnvironment = {
       return new tsWorker()
     }
     return new EditorWorker()
-  }
+  },
 }
 
 export default defineComponent({
   name: 'CodeEditor',
   props: EditorProps,
   emits: ['update:modelValue', 'change', 'editor-mounted'],
-  setup(props, {emit}) {
-    let editor: monaco.editor.IStandaloneCodeEditor;
-    let codeEditBox = ref();
+  setup(props, { emit }) {
+    let editor: monaco.editor.IStandaloneCodeEditor
+    let codeEditBox = ref()
 
     const init = () => {
       monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
@@ -67,58 +66,57 @@ export default defineComponent({
         language: props.language,
         theme: props.theme,
         ...props.options,
-      });
+      })
 
       // 监听值的变化
       editor.onDidChangeModelContent(() => {
         // 给父组件实时返回最新文本
-        const value = editor.getValue();
-        emit('update:modelValue', value);
-        emit('change', value);
+        const value = editor.getValue()
+        emit('update:modelValue', value)
+        emit('change', value)
       })
 
-      emit('editor-mounted', editor);
+      emit('editor-mounted', editor)
     }
 
     watch(
-        () => props.modelValue,
-        newValue => {
-          if (editor) {
-            const value = editor.getValue();
-            if (newValue !== value) {
-              editor.setValue(newValue);
-            }
+      () => props.modelValue,
+      (newValue) => {
+        if (editor) {
+          const value = editor.getValue()
+          if (newValue !== value) {
+            editor.setValue(newValue)
           }
         }
+      }
     )
 
     watch(
-        () => props.options,
-        newValue => {
-          editor.updateOptions(newValue);
-        },
-        {deep: true}
+      () => props.options,
+      (newValue) => {
+        editor.updateOptions(newValue)
+      },
+      { deep: true }
     )
 
     watch(
-        () => props.language,
-        newValue => {
-          monaco.editor.setModelLanguage(editor.getModel()!, newValue);
-        }
+      () => props.language,
+      (newValue) => {
+        monaco.editor.setModelLanguage(editor.getModel()!, newValue)
+      }
     )
 
     onBeforeUnmount(() => {
-      editor.dispose();
+      editor.dispose()
     })
 
     onMounted(() => {
-      init();
+      init()
     })
 
-    return {codeEditBox};
-  }
+    return { codeEditBox }
+  },
 })
-
 </script>
 
 <style scoped>

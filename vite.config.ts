@@ -31,6 +31,6 @@ export default defineConfig({
         },
     },
     esbuild: {
-        pure:["alert", "console.log", "console.warn", "debugger"],
+        pure:["alert", "console.log", "console.warn"],
     },
 })

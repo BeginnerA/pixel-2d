@@ -1,14 +1,16 @@
 <template>
   <div class="graphics-more-modal">
-    <t-dialog header="编辑器画布设置" width="800px"
-              :visible="visible"
-              :destroy-on-close="true"
-              :close-btn="true"
-              @close="onCancel"
+    <t-dialog
+      header="编辑器画布设置"
+      width="800px"
+      :visible="visible"
+      :destroy-on-close="true"
+      :close-btn="true"
+      @close="onCancel"
     >
       <template #header>
         <div>
-          <t-icon name="component-space"/>
+          <t-icon name="component-space" />
           <span style="vertical-align: middle">编辑器设置</span>
         </div>
       </template>
@@ -16,36 +18,38 @@
         <t-tabs :value="activeTabsKey" @change="handlerChange">
           <t-tab-panel value="canvas">
             <template #label>
-              <t-icon name="transform-1" class="tabs-icon-margin"/>
+              <t-icon name="transform-1" class="tabs-icon-margin" />
               画布
             </template>
             <div class="modal-tabs-content">
-              <t-card v-for="(item) in formListData" :header="item.title">
+              <t-card v-for="item in formListData">
                 <template #header>
                   <div>
-                    <t-icon v-if="item.icon" :name="item.icon"/>
+                    <t-icon v-if="item.icon" :name="item.icon" />
                     <span style="vertical-align: middle">{{ item.title }}</span>
                   </div>
                   <div v-if="item.type === 'switch'">
-                    <t-switch :disabled="item.disabled" v-model="(item.data as any)[item.value]" :label="['开', '关']"
-                              @[item.event]="item.action"/>
+                    <t-switch
+                      :disabled="item.disabled"
+                      v-model="(item.data as any)[item.value]"
+                      :label="['开', '关']"
+                      @[item.event]="item.action"
+                    />
                   </div>
                 </template>
                 <div>
-                  <generate-form :options="{layout:'inline'}" :model-value="item.children"/>
+                  <generate-form :options="{ layout: 'inline' }" :model-value="item.children" />
                 </div>
               </t-card>
             </div>
           </t-tab-panel>
           <t-tab-panel value="other">
             <template #label>
-              <t-icon name="palette-1" class="tabs-icon-margin"/>
+              <t-icon name="palette-1" class="tabs-icon-margin" />
               其它
             </template>
             <div class="modal-tabs-content">
-              <t-card header="待开发">
-                待开发
-              </t-card>
+              <t-card header="待开发"> 待开发 </t-card>
             </div>
           </t-tab-panel>
         </t-tabs>
@@ -58,25 +62,26 @@
 </template>
 
 <script setup lang="ts">
-import {TabsProps} from "tdesign-vue-next";
-import {computed, reactive, ref} from "vue";
-import GenerateForm from "../../common/form-list/GenerateForm.vue";
-import {Editor2D} from "../core/editor2d";
-import {Editor2DPropsMenu} from "../core/editor2d-global-type";
-import {globalEditor2DProps} from "../core/editor2d-global-data";
+import { TabsProps } from 'tdesign-vue-next'
+import { computed, reactive, ref } from 'vue'
+import GenerateForm from '../../common/form-list/GenerateForm.vue'
+import { Editor2D } from '../core/editor2d'
+import { Editor2DPropsMenu } from '../core/editor2d-global-type'
+import { globalEditor2DProps } from '../core/editor2d-global-data'
+import { Editor2DCache } from '@/components/editor2d/core/editor2d-local-storage.ts'
 
 // 2d编辑器全局配置
 let m = reactive(globalEditor2DProps)
 // 激活卡片
-let activeTabsKey = ref<string | number>('canvas');
-let editor2d = new Editor2D();
+let activeTabsKey = ref<string | number>('canvas')
+let editor2d = new Editor2D()
 
 defineProps({
   visible: {
     type: Boolean,
     required: true,
   },
-});
+})
 
 /**
  * 2D编辑器属性面板功能菜单调度函数
@@ -84,9 +89,8 @@ defineProps({
  */
 function setOptionFunc(prop: string) {
   return (value: any) => {
-    editor2d.setOptions({
-      [prop]: value
-    });
+    editor2d.setData(prop, value)
+    new Editor2DCache().saveCanvas()
   }
 }
 
@@ -95,26 +99,26 @@ function setOptionFunc(prop: string) {
  * @param activeKey 激活卡片 key
  */
 const handlerChange: TabsProps['onChange'] = (activeKey) => {
-  activeTabsKey.value = activeKey;
-};
+  activeTabsKey.value = activeKey
+}
 
 /**
  * 注册事件
  */
-const emit = defineEmits(['confirm', 'close']);
+const emit = defineEmits(['confirm', 'close'])
 
 /**
  * 关闭
  */
 const onCancel = () => {
-  emit('close');
-};
+  emit('close')
+}
 
 /**
  * 属性面板菜单
  */
 const formListData = computed(() => {
-  return PROPS_MENU_LIST;
+  return PROPS_MENU_LIST
 })
 
 /**
@@ -137,7 +141,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         data: m,
         event: 'change',
         action: setOptionFunc('ruleColor'),
-      }
+      },
     ],
   },
   {
@@ -162,7 +166,9 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         type: 'number',
         value: 'gridSize',
         option: {
-          step: 10, min: 10, max: 100
+          step: 10,
+          min: 10,
+          max: 100,
         },
         data: m,
         event: 'change',
@@ -205,8 +211,8 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         data: m,
         event: 'change',
         action: setOptionFunc('hoverBackground'),
-      }
-    ]
+      },
+    ],
   },
   {
     title: '锚点',
@@ -235,8 +241,8 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         data: m,
         event: 'change',
         action: setOptionFunc('anchorBackground'),
-      }
-    ]
+      },
+    ],
   },
   {
     title: '辅助线',
@@ -265,8 +271,8 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         data: m,
         event: 'change',
         action: setOptionFunc('animateColor'),
-      }
-    ]
+      },
+    ],
   },
   {
     title: '文字',
@@ -319,8 +325,8 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         data: m,
         event: 'change',
         action: setOptionFunc('textBaseline'),
-      }
-    ]
+      },
+    ],
   },
   {
     title: '鼠标样式',
@@ -333,7 +339,6 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         event: 'change',
         data: m,
         action: setOptionFunc('rotateCursor'),
-
       },
       {
         title: 'hover样式',
@@ -342,8 +347,8 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         data: m,
         event: 'change',
         action: setOptionFunc('hoverCursor'),
-      }
-    ]
+      },
+    ],
   },
   {
     title: '禁止',
@@ -364,7 +369,8 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         data: m,
         event: 'change',
         action: setOptionFunc('disableRotate'),
-      }, {
+      },
+      {
         title: '显示锚点',
         type: 'switch',
         value: 'disableAnchor',
@@ -411,8 +417,8 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         data: m,
         event: 'change',
         action: setOptionFunc('disableTranslate'),
-      }
-    ]
+      },
+    ],
   },
   {
     title: '画布设置',
@@ -433,8 +439,8 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         data: m,
         event: 'change',
         action: setOptionFunc('maxScale'),
-      }
-    ]
+      },
+    ],
   },
   {
     title: '其他设置',
@@ -453,7 +459,7 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         type: 'number',
         value: 'interval',
         option: {
-          min: 1
+          min: 1,
         },
         data: m,
         event: 'change',
@@ -464,12 +470,13 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         type: 'number',
         value: 'animateInterval',
         option: {
-          min: 1
+          min: 1,
         },
         data: m,
         event: 'change',
         action: setOptionFunc('animateInterval'),
-      }, {
+      },
+      {
         title: '文字是否选择',
         type: 'switch',
         value: 'textRotate',
@@ -484,16 +491,14 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
         data: m,
         event: 'change',
         action: setOptionFunc('textFlip'),
-      }
-    ]
+      },
+    ],
   },
 ]
-
 </script>
 
 <style scoped lang="less">
 .graphics-more-modal {
-
   :deep(.t-card__header) {
     padding: var(--td-comp-paddingTB-s) var(--td-comp-paddingLR-s);
   }
@@ -501,7 +506,6 @@ const PROPS_MENU_LIST: Array<Editor2DPropsMenu> = [
   :deep(.t-card__body) {
     padding: var(--td-comp-paddingTB-s) var(--td-comp-paddingLR-s);
   }
-
 }
 
 .modal-tabs-content {

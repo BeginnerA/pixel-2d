@@ -1,10 +1,10 @@
 <template>
   <div class="map-structure-config">
     <t-list>
-      <t-list-item v-for="(item) in activePens">
+      <t-list-item v-for="item in activePens">
         <t-button variant="text" :theme="activePenTheme(item)" @click="changeActive(item)">
           <template #icon>
-            <activity-icon/>
+            <activity-icon />
           </template>
           {{ item.name }}
         </t-button>
@@ -16,26 +16,26 @@
           <t-tooltip :content="lockedContent(item)">
             <t-button variant="text" shape="square" @click="changeLocked(item)">
               <template v-if="item.locked === 1">
-                <lock-on-icon/>
+                <lock-on-icon />
               </template>
               <template v-else-if="item.locked === 2">
                 <div class="iconfont icon-lock-on" style="font-size: 1.3em"></div>
               </template>
               <template v-else-if="item.locked === 10">
-                <work-off-icon/>
+                <work-off-icon />
               </template>
               <template v-else>
-                <lock-off-icon/>
+                <lock-off-icon />
               </template>
             </t-button>
           </t-tooltip>
 
           <t-button variant="text" shape="square" @click="changeVisible(item)">
             <template v-if="item.visible || item.visible === undefined">
-              <browse-icon/>
+              <browse-icon />
             </template>
             <template v-else>
-              <browse-off-icon/>
+              <browse-off-icon />
             </template>
           </t-button>
         </template>
@@ -45,30 +45,30 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, PropType, ref, watch} from "vue";
-import {LockState} from "@meta2d/core/src/pen/model";
-import {Editor2DCanvas} from "../../core/editor2d";
-import {Editor2DPen} from "../../core/editor2d-global-type";
-import {ActivityIcon, BrowseIcon, BrowseOffIcon, LockOffIcon, LockOnIcon, WorkOffIcon} from "tdesign-icons-vue-next";
+import { onMounted, PropType, ref, watch } from 'vue'
+import { LockState } from '@meta2d/core/src/pen/model'
+import { Editor2DCanvas } from '../../core/editor2d'
+import { Editor2DPen } from '../../core/editor2d-global-type'
+import { ActivityIcon, BrowseIcon, BrowseOffIcon, LockOffIcon, LockOnIcon, WorkOffIcon } from 'tdesign-icons-vue-next'
 
 // 编辑中的图元
 let props = defineProps({
   modelValue: {
     type: Object as PropType<Editor2DPen | any>,
-    required: true
+    required: true,
   },
-});
-let editorPen = ref<Editor2DPen>();
+})
+let editorPen = ref<Editor2DPen>()
 // 选中的图元
-let activePens = ref<Array<Editor2DPen>>([]);
+let activePens = ref<Array<Editor2DPen>>([])
 
 /**
  * 改变选中图元
  * @param pen 图元
  */
 function changeActive(pen: any) {
-  editorPen.value = pen;
-  emit('change', pen);
+  editorPen.value = pen
+  emit('change', pen)
 }
 
 /**
@@ -77,9 +77,9 @@ function changeActive(pen: any) {
  */
 function activePenTheme(pen: any) {
   if (editorPen && editorPen.value?.id === pen.id) {
-    return 'primary';
+    return 'primary'
   } else {
-    return 'default';
+    return 'default'
   }
 }
 
@@ -90,13 +90,13 @@ function activePenTheme(pen: any) {
 function canvasLayerText(pen: any) {
   switch (pen.canvasLayer) {
     case 1:
-      return '模板层';
+      return '模板层'
     case 2:
-      return '下层';
+      return '下层'
     case 4:
-      return '上层';
+      return '上层'
     default:
-      return '中层';
+      return '中层'
   }
 }
 
@@ -107,13 +107,13 @@ function canvasLayerText(pen: any) {
 function lockedContent(pen: any) {
   switch (pen.locked) {
     case LockState.DisableEdit:
-      return '禁止编辑';
+      return '禁止编辑'
     case LockState.DisableMove:
-      return '禁止编辑和移动';
+      return '禁止编辑和移动'
     case LockState.Disable:
-      return '禁止所有事件';
+      return '禁止所有事件'
     default:
-      return '可编辑';
+      return '可编辑'
   }
 }
 
@@ -123,18 +123,20 @@ function lockedContent(pen: any) {
  */
 function changeLocked(pen: any) {
   if (pen.locked === LockState.None) {
-    pen.locked = LockState.DisableEdit;
+    pen.locked = LockState.DisableEdit
   } else if (pen.locked === LockState.DisableEdit) {
-    pen.locked = LockState.DisableMove;
+    pen.locked = LockState.DisableMove
   } else if (pen.locked === LockState.DisableMove) {
-    pen.locked = LockState.Disable;
+    pen.locked = LockState.Disable
   } else {
-    pen.locked = LockState.None;
+    pen.locked = LockState.None
   }
-  new Editor2DCanvas().setValue([{
-    id: pen.id,
-    locked: pen.locked,
-  }]);
+  new Editor2DCanvas().setValue([
+    {
+      id: pen.id,
+      locked: pen.locked,
+    },
+  ])
 }
 
 /**
@@ -142,11 +144,13 @@ function changeLocked(pen: any) {
  * @param pen 图元
  */
 function changeVisible(pen: any) {
-  pen.visible = !pen.visible;
-  new Editor2DCanvas().setValue([{
-    id: pen.id,
-    visible: pen.visible
-  }]);
+  pen.visible = !pen.visible
+  new Editor2DCanvas().setValue([
+    {
+      id: pen.id,
+      visible: pen.visible,
+    },
+  ])
 }
 
 /**
@@ -154,29 +158,28 @@ function changeVisible(pen: any) {
  * @param pens 图元
  */
 function init(pens: Array<Editor2DPen>) {
-  activePens.value = meta2d.store.data.pens;
-  editorPen.value = pens;
+  activePens.value = meta2d.store.data.pens
+  editorPen.value = pens
 }
 
 /**
  * 注册事件
  */
-const emit = defineEmits(['change']);
+const emit = defineEmits(['change'])
 
 watch(
-    () => props.modelValue,
-    (newValue) => {
-      if (newValue) {
-        init(newValue);
-      }
-    },
-    {immediate: true},
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue) {
+      init(newValue)
+    }
+  },
+  { immediate: true }
 )
 
 onMounted(() => {
-  init(props.modelValue);
+  init(props.modelValue)
 })
-
 </script>
 
 <style scoped lang="less">

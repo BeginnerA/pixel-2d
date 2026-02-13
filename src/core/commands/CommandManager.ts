@@ -4,7 +4,7 @@
  * @author MC.Yang
  */
 
-import { EventBus } from '../events/EventBus'
+import { EventBus } from '@/core'
 
 /** 命令上下文 */
 export interface CommandContext {
@@ -44,8 +44,11 @@ export class CommandManager {
   private maxHistorySize = 50
   private eventBus: EventBus
 
-  constructor(eventBus?: EventBus) {
-    this.eventBus = eventBus || new EventBus()
+  constructor(eventBus: EventBus) {
+    if (!eventBus) {
+      throw new Error('[CommandManager] eventBus 是必需的参数')
+    }
+    this.eventBus = eventBus
   }
 
   /**
@@ -53,7 +56,7 @@ export class CommandManager {
    */
   registerCommand(command: ICommand): void {
     if (this.commands.has(command.id)) {
-      console.warn(`[CommandManager] Command "${command.id}" already registered`)
+      console.warn(`[CommandManager] 命令 "${command.id}" 已注册`)
     }
     this.commands.set(command.id, command)
   }
@@ -71,7 +74,7 @@ export class CommandManager {
   async execute(commandId: string, context?: CommandContext): Promise<void> {
     const command = this.commands.get(commandId)
     if (!command) {
-      throw new Error(`[CommandManager] Command "${commandId}" not found`)
+      throw new Error(`[CommandManager] 命令 "${commandId}" 未找到`)
     }
 
     try {
@@ -98,7 +101,7 @@ export class CommandManager {
         this.eventBus.emitSync('command:executed', { commandId, context })
       }
     } catch (error) {
-      console.error(`[CommandManager] Failed to execute command "${commandId}":`, error)
+      console.error(`[CommandManager] 执行命令失败 "${commandId}":`, error)
       this.eventBus.emitSync('command:error', { commandId, error })
       throw error
     }
@@ -109,7 +112,7 @@ export class CommandManager {
    */
   async undo(): Promise<void> {
     if (this.undoStack.length === 0) {
-      console.warn('[CommandManager] Nothing to undo')
+      console.warn('[CommandManager] 没有要撤消的内容')
       return
     }
 
@@ -117,7 +120,7 @@ export class CommandManager {
     const { command, context } = history
 
     if (!command.undo) {
-      throw new Error(`[CommandManager] Command "${command.id}" does not support undo`)
+      throw new Error(`[CommandManager] 命令 "${command.id}" 不支持撤消`)
     }
 
     try {
@@ -125,7 +128,7 @@ export class CommandManager {
       this.redoStack.push(history)
       this.eventBus.emitSync('command:undo', { commandId: command.id, context })
     } catch (error) {
-      console.error(`[CommandManager] Failed to undo command "${command.id}":`, error)
+      console.error(`[CommandManager] 撤消命令失败 "${command.id}":`, error)
       this.undoStack.push(history) // 恢复到撤销栈
       throw error
     }
@@ -136,7 +139,7 @@ export class CommandManager {
    */
   async redo(): Promise<void> {
     if (this.redoStack.length === 0) {
-      console.warn('[CommandManager] Nothing to redo')
+      console.warn('[CommandManager] 没什么要重做的')
       return
     }
 
@@ -154,7 +157,7 @@ export class CommandManager {
       this.undoStack.push(history)
       this.eventBus.emitSync('command:redo', { commandId: command.id, context })
     } catch (error) {
-      console.error(`[CommandManager] Failed to redo command "${command.id}":`, error)
+      console.error(`[CommandManager] 无法重做命令 "${command.id}":`, error)
       this.redoStack.push(history) // 恢复到重做栈
       throw error
     }
@@ -195,6 +198,15 @@ export class CommandManager {
    */
   getRedoStackSize(): number {
     return this.redoStack.length
+  }
+
+  /**
+   * 销毁命令管理器
+   */
+  destroy(): void {
+    this.clearHistory()
+    this.commands.clear()
+    this.eventBus.emitSync('command-manager:destroyed', {})
   }
 
   /**

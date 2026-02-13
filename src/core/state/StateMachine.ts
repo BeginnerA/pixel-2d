@@ -4,7 +4,7 @@
  * @author MC.Yang
  */
 
-import { EventBus } from '../events/EventBus'
+import { EventBus } from '@/core'
 
 /** 状态接口 */
 export interface IState<T = any> {
@@ -88,7 +88,7 @@ export class StateMachine<T = any> {
   async transitionTo(stateName: string): Promise<void> {
     const targetState = this.states.get(stateName)
     if (!targetState) {
-      throw new Error(`[StateMachine] State "${stateName}" not found`)
+      throw new Error(`[StateMachine] 状态 "${stateName}" 找不到`)
     }
 
     const fromName = this.currentState?.name || 'null'
@@ -100,7 +100,7 @@ export class StateMachine<T = any> {
     if (transition?.condition) {
       const canTransition = await transition.condition(this.context)
       if (!canTransition) {
-        console.warn(`[StateMachine] Transition from "${fromName}" to "${stateName}" blocked by condition`)
+        console.warn(`[StateMachine] 过渡从 "${fromName}" 至 "${stateName}" 被条件阻止`)
         return
       }
     }
@@ -170,6 +170,29 @@ export class StateMachine<T = any> {
    */
   updateContext(context: T): void {
     this.context = context
+  }
+
+  /**
+   * 初始化状态机
+   */
+  async initialize(initialState: IState<T>): Promise<void> {
+    await this.transitionTo(initialState.name)
+    this.eventBus.emitSync('state-machine:initialized', { initialState: initialState.name })
+  }
+
+  /**
+   * 销毁状态机
+   */
+  destroy(): void {
+    if (this.currentState?.onExit) {
+      this.currentState.onExit(this.context)?.catch((error) => {
+        console.error('[StateMachine] 销毁过程中出错:', error)
+      })
+    }
+    this.states.clear()
+    this.transitions = []
+    this.currentState = null
+    this.eventBus.emitSync('state-machine:destroyed', {})
   }
 
   /**

@@ -1,16 +1,23 @@
 <template>
   <div class="pen-effect-custom-config">
-    <t-drawer v-model:visible="options.visible" :header="options.header || '节点动画'" :footer="options.footer || false"
-              @close="onEffectCustomClose">
+    <t-drawer
+      v-model:visible="options.visible"
+      :header="options.header || '节点动画'"
+      :footer="options.footer || false"
+      @close="onEffectCustomClose"
+    >
       <t-button style="margin-bottom: 10px" type="button" :block="true" @click="onAddEffectFrames">新增动画帧</t-button>
       <template v-if="framesData && framesData.length > 0">
         <t-form ref="form" label-align="left">
           <t-collapse v-model:value="activeKey" expand-icon-placement="right">
-            <t-collapse-panel v-for="(data, index) in framesData" :value="index"
-                              :header="'动画帧 ' + (index + 1) + '/' + framesData.length">
-              <generate-form :model-value="getEffectFramesProps(data)"/>
+            <t-collapse-panel
+              v-for="(data, index) in framesData"
+              :value="index"
+              :header="'动画帧 ' + (index + 1) + '/' + framesData.length"
+            >
+              <generate-form :model-value="getEffectFramesProps(data)" />
               <template #headerRightContent>
-                <DeleteIcon @click="onDeleteFrames(index)"/>
+                <DeleteIcon @click="onDeleteFrames(index)" />
               </template>
             </t-collapse-panel>
           </t-collapse>
@@ -21,17 +28,17 @@
 </template>
 
 <script setup lang="ts">
-import {PropType, ref, watch} from "vue";
-import {DeleteIcon} from "tdesign-icons-vue-next";
-import {DrawerProps} from "tdesign-vue-next/es/drawer";
-import GenerateForm from "../../../common/form-list/GenerateForm.vue";
-import {Editor2DPen, Editor2DPropsMenu} from "../../core/editor2d-global-type";
-import {CONFIG_LINE_DASH, FONT_FAMILY, GRADIENT_TYPE} from "../../core/editor2d-global-constant";
+import { PropType, ref, watch } from 'vue'
+import { DeleteIcon } from 'tdesign-icons-vue-next'
+import { DrawerProps } from 'tdesign-vue-next'
+import GenerateForm from '../../../common/form-list/GenerateForm.vue'
+import { Editor2DPen, Editor2DPropsMenu } from '../../core/editor2d-global-type'
+import { CONFIG_LINE_DASH, FONT_FAMILY, GRADIENT_TYPE } from '../../core/editor2d-global-constant'
 
 let props = defineProps({
   modelValue: {
     type: Object as PropType<Editor2DPen | any>,
-    required: true
+    required: true,
   },
   options: {
     type: Object as PropType<DrawerProps>,
@@ -41,14 +48,14 @@ let props = defineProps({
         visible: false,
         footer: false,
       }
-    }
+    },
   },
-});
+})
 
 // 编辑中动效数据
-let framesData = ref<Array<Editor2DPen>>([]);
+let framesData = ref<Array<Editor2DPen>>([])
 // 激活动效帧 key
-let activeKey = ref<Array<number>>([]);
+let activeKey = ref<Array<number>>([])
 
 /**
  * 设置动画帧项
@@ -173,7 +180,7 @@ function getEffectFramesProps(data: any): Array<Editor2DPropsMenu> {
       value: 'dash',
       data: data,
       event: 'change',
-      action: setOptionFunc('dash')
+      action: setOptionFunc('dash'),
     },
     {
       title: '线条宽度',
@@ -533,14 +540,14 @@ function getEffectFramesProps(data: any): Array<Editor2DPropsMenu> {
       event: 'change',
       action: setOptionFunc('text'),
     },
-  ];
+  ]
 }
 
 /**
  * 添加动画帧
  */
 function onAddEffectFrames() {
-  framesData.value.push({});
+  framesData.value.push({})
 }
 
 /**
@@ -548,44 +555,41 @@ function onAddEffectFrames() {
  * @param index 索引
  */
 function onDeleteFrames(index: number) {
-  framesData.value.splice(index, 1);
+  framesData.value.splice(index, 1)
 }
 
 /**
  * 关闭动效自定义窗口
  */
 function onEffectCustomClose() {
-  emit('confirm', framesData.value);
-  props.options.visible = false;
+  emit('confirm', framesData.value)
+  props.options.visible = false
 }
 
 /**
  * 注册事件
  */
-const emit = defineEmits(['confirm', 'close']);
+const emit = defineEmits(['confirm', 'close'])
 
 /**
  * 初始化
  * @param pen 图元
  */
 function init(pen: Editor2DPen) {
-  framesData.value = [];
+  framesData.value = []
   if (pen && pen.frames) {
-    framesData.value = pen.frames as Array<Editor2DPen>;
+    framesData.value = pen.frames as Array<Editor2DPen>
   }
 }
 
 watch(
-    () => props.modelValue,
-    (newValue) => {
-      if (newValue) {
-        init(newValue);
-      }
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue) {
+      init(newValue)
     }
+  }
 )
-
 </script>
 
-<style scoped lang="less">
-
-</style>
+<style scoped lang="less"></style>

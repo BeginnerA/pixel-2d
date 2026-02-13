@@ -1,35 +1,41 @@
 <template>
   <div class="graphics-more-modal">
-    <t-dialog header="图形库管理" width="800px"
-              :visible="moreVisible"
-              :destroy-on-close="true"
-              :close-btn="true"
-              @close="onCancel"
+    <t-dialog
+      header="图形库管理"
+      width="800px"
+      :visible="moreVisible"
+      :destroy-on-close="true"
+      :close-btn="true"
+      @close="onCancel"
     >
       <template #header>
         <div>
-          <t-icon name="component-space"/>
+          <t-icon name="component-space" />
           <span style="vertical-align: middle">图形库管理</span>
         </div>
       </template>
       <template #body>
         <div>
-          <t-enhanced-table maxHeight="500px" ref="tableRef" row-key="key" drag-sort="row-handler"
-                            lazy-load
-                            :data="graphicGroupsList"
-                            :columns="columns"
-                            :tree="treeConfig"
-                            :tree-expand-and-fold-icon="treeExpandAndFoldIconRender"
-                            :before-drag-sort="beforeDragSort"
-                            @drag-sort="onDragSort"
+          <t-enhanced-table
+            maxHeight="500px"
+            ref="tableRef"
+            row-key="key"
+            drag-sort="row-handler"
+            lazy-load
+            :data="graphicGroupsList"
+            :columns="columns"
+            :tree="treeConfig"
+            :tree-expand-and-fold-icon="treeExpandAndFoldIconRender"
+            :before-drag-sort="beforeDragSort"
+            @drag-sort="onDragSort"
           >
-            <template #icon="{row}">
+            <template #icon="{ row }">
               <div v-if="row.data">
                 <template v-if="row.data?.image">
-                  <img :src="row.data.image" alt=""/>
+                  <img :src="row.data.image" alt="" />
                 </template>
                 <template v-else-if="row.data?.video">
-                  <icon-font :name="row.icon" size="2em"/>
+                  <icon-font :name="row.icon" size="2em" />
                 </template>
                 <template v-else-if="row.icon.indexOf('iconfont') !== -1">
                   <div :class="row.icon"></div>
@@ -44,22 +50,31 @@
                 </template>
               </div>
             </template>
-            <template #show="{row}">
+            <template #show="{ row }">
               <div>
-                <t-switch size="small" :default-value="row.show !== undefined ? row.show : true"
-                          @change="onShowChange(row, $event)"/>
+                <t-switch
+                  size="small"
+                  :default-value="row.show !== undefined ? row.show : true"
+                  @change="onShowChange(row, $event)"
+                />
               </div>
             </template>
-            <template #disabled="{row}">
+            <template #disabled="{ row }">
               <div>
-                <t-switch size="small" :default-value="row.disabled !== undefined ? row.disabled : true"
-                          @change="onDisabledChange(row, $event)"/>
+                <t-switch
+                  size="small"
+                  :default-value="row.disabled !== undefined ? row.disabled : true"
+                  @change="onDisabledChange(row, $event)"
+                />
               </div>
             </template>
-            <template #isCommon="{row}">
+            <template #isCommon="{ row }">
               <div v-if="row.data">
-                <t-switch size="small" :default-value="row.isCommon !== undefined ? row.isCommon : false"
-                          @change="onCommonChange(row, $event)"/>
+                <t-switch
+                  size="small"
+                  :default-value="row.isCommon !== undefined ? row.isCommon : false"
+                  @change="onCommonChange(row, $event)"
+                />
               </div>
             </template>
           </t-enhanced-table>
@@ -73,22 +88,21 @@
 </template>
 
 <script setup lang="ts">
-import {EnhancedTableInstanceFunctions, EnhancedTableProps} from "tdesign-vue-next";
-import {ChevronDownIcon, ChevronRightIcon, IconFont, MoveIcon} from 'tdesign-icons-vue-next';
-import {reactive, ref, watch} from "vue";
-import {DragSortContext} from "tdesign-vue-next/es/table/type";
-import {Editor2DPropsMenu} from "../core/editor2d-global-type.ts";
+import { DragSortContext, EnhancedTableInstanceFunctions, EnhancedTableProps } from 'tdesign-vue-next'
+import { ChevronDownIcon, ChevronRightIcon, IconFont, MoveIcon } from 'tdesign-icons-vue-next'
+import { reactive, ref, watch } from 'vue'
+import { Editor2DPropsMenu } from '../core/editor2d-global-type.ts'
 
 let props = defineProps({
   visible: {
     type: Boolean,
     required: true,
   },
-});
-let moreVisible = props.visible;
+})
+let moreVisible = props.visible
 // 图元数据
 let graphicGroupsList = defineModel<Array<Editor2DPropsMenu>>()
-let tableRef = ref<EnhancedTableInstanceFunctions>();
+let tableRef = ref<EnhancedTableInstanceFunctions>()
 // 图元管理表头
 let columns: EnhancedTableProps['columns'] = [
   {
@@ -127,13 +141,13 @@ let columns: EnhancedTableProps['columns'] = [
     width: 30,
     cell: 'isCommon',
   },
-];
+]
 
 watch(
-    () => props.visible,
-    newVisible => {
-      moreVisible = newVisible;
-    }
+  () => props.visible,
+  (newVisible) => {
+    moreVisible = newVisible
+  }
 )
 
 /**
@@ -142,11 +156,11 @@ watch(
  * @param val 状态
  */
 const onShowChange = (row: Editor2DPropsMenu, val: boolean) => {
-  row.show = val;
+  row.show = val
   if (row.children) {
-    row.children?.forEach(item => item.show = val);
+    row.children?.forEach((item) => (item.show = val))
   }
-};
+}
 
 /**
  * 启用/禁用开关触发事件
@@ -156,9 +170,9 @@ const onShowChange = (row: Editor2DPropsMenu, val: boolean) => {
 const onDisabledChange = (row: Editor2DPropsMenu, val: boolean) => {
   row.disabled = val
   if (row.children) {
-    row.children?.forEach(item => item.disabled = val);
+    row.children?.forEach((item) => (item.disabled = val))
   }
-};
+}
 
 /**
  * 是否是常用图元开关触发事件
@@ -168,9 +182,9 @@ const onDisabledChange = (row: Editor2DPropsMenu, val: boolean) => {
 const onCommonChange = (row: Editor2DPropsMenu, val: boolean) => {
   row.isCommon = val
   if (row.children) {
-    row.children?.forEach(item => item.isCommon = val);
+    row.children?.forEach((item) => (item.isCommon = val))
   }
-};
+}
 
 /**
  * 图元管理表配置
@@ -181,7 +195,7 @@ const treeConfig: EnhancedTableProps['tree'] = reactive({
   treeNodeColumnIndex: 1,
   checkStrictly: true,
   expandTreeNodeOnClick: false,
-});
+})
 
 /**
  * 自定义树形结构展开图标
@@ -189,46 +203,43 @@ const treeConfig: EnhancedTableProps['tree'] = reactive({
  * @param type 触发动作
  * @param row 数据
  */
-const treeExpandAndFoldIconRender: EnhancedTableProps['treeExpandAndFoldIcon'] = (h, {type, row}) => {
-  console.log('树展开和折叠图标渲染:', row);
-  return type === 'expand' ? h(ChevronRightIcon) : h(ChevronDownIcon);
-};
+const treeExpandAndFoldIconRender: EnhancedTableProps['treeExpandAndFoldIcon'] = (h, { type, row }) => {
+  return type === 'expand' ? h(ChevronRightIcon) : h(ChevronDownIcon)
+}
 
 /**
  * 拖拽排序前触发事件
  * @param params 事件
  */
 const beforeDragSort: EnhancedTableProps['beforeDragSort'] = (params: DragSortContext<any>) => {
-  console.log('拖拽排序前触发:', params);
+  console.log('拖拽排序前触发:', params)
   // 应用于需要阻止拖拽排序的场景。如：当子节点存在时，则不允许调整顺序。
   // 返回值为 true，允许拖拽排序；返回值 为 false，则阻止拖拽排序
-  return true;
-};
+  return true
+}
 
 /**
  * 拖拽排序时触发事件
  * @param params 数据
  */
 const onDragSort: EnhancedTableProps['onDragSort'] = (params: DragSortContext<any>) => {
-  console.log('拖拽排序时触发:', params);
-};
+  console.log('拖拽排序时触发:', params)
+}
 
 /**
  * 注册事件
  */
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close'])
 
 /**
  * 关闭
  */
 const onCancel = () => {
-  emit('close');
-};
-
+  emit('close')
+}
 </script>
 
 <style scoped lang="less">
-
 img {
   max-width: 28px;
   max-height: 28px;

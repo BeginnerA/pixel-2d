@@ -3,34 +3,38 @@
     <!-- 图形库 -->
     <t-menu v-model:expanded="activeMenuKeys" :default-value="menuConfig.key" :collapsed="false">
       <div class="graphics-search">
-        <t-input v-model="keyword" size="medium" placeholder="搜索图元"
-                 @change="filterComponent"
-        >
+        <t-input v-model="keyword" size="medium" placeholder="搜索图元" @change="filterComponent">
           <template #suffixIcon>
-            <search-icon :style="{ cursor: 'pointer' }"/>
+            <search-icon :style="{ cursor: 'pointer' }" />
           </template>
         </t-input>
       </div>
       <div class="graphics-tabs">
-        <t-tabs :drag-sort="tabsConfig.dragSort" :value="activeTabsKey"
-                @drag-sort="onGraphicsTabDragend"
-                @change="onGraphicsTabChange">
+        <t-tabs
+          :drag-sort="tabsConfig.dragSort"
+          :value="activeTabsKey"
+          @drag-sort="onGraphicsTabDragend"
+          @change="onGraphicsTabChange"
+        >
           <t-tab-panel
-              v-for="panel in panelTabs"
-              :key="panel.key"
-              :value="panel.key"
-              :label="panel.label"
-              :draggable="panel.draggable"
+            v-for="panel in panelTabs"
+            :key="panel.key"
+            :value="panel.key"
+            :label="panel.label"
+            :draggable="panel.draggable"
           >
             <div class="graphics-list">
               <template v-if="activeTabsKey === 'drawing_manage'">
-                <p>图纸</p>
+                <p>图纸开发中</p>
               </template>
               <template v-if="activeTabsKey === 'sys_component'" v-for="(menu, index) in graphicGroupsList">
-                <t-submenu :value="menu.key ? menu.key : index" v-if="menu.show !== undefined ? menu.show : true"
-                           :disabled="menu.disabled !== undefined ? !menu.disabled : false">
+                <t-submenu
+                  :value="menu.key ? menu.key : index"
+                  v-if="menu.show !== undefined ? menu.show : true"
+                  :disabled="menu.disabled !== undefined ? !menu.disabled : false"
+                >
                   <template v-if="displayMenuIcon" #icon>
-                    <t-icon :name="activeMenuKeys.includes(menu.key as string) ? 'folder-open-1' : 'folder-open'"/>
+                    <t-icon :name="activeMenuKeys.includes(menu.key as string) ? 'folder-open-1' : 'folder-open'" />
                   </template>
                   <template v-if="isDisplayTitle(displayMenuTitle, menu.title, menu.icon)" #title>
                     <div v-if="menu.disabled === undefined || menu.disabled">
@@ -38,27 +42,31 @@
                         {{ menu.title }}
                       </span>
                       <span class="group-total">
-                      {{ "(" + menu.children?.length + ")" }}
-                    </span>
+                        {{ '(' + menu.children?.length + ')' }}
+                      </span>
                     </div>
-                    <div v-else>
-                      {{ menu.title }}({{ menuConfig.disabledTips }})
-                    </div>
+                    <div v-else>{{ menu.title }}({{ menuConfig.disabledTips }})</div>
                   </template>
                   <template class="graphics-icon">
                     <div v-for="(item, index) in menu.children">
-                      <div class="graphics-icon-icon-item"
-                           v-if="item.show !== undefined ? item.show : true"
-                           :draggable="item.disabled !== undefined ? item.disabled : true"
-                           :key="item.key ? item.key : index"
-                           :title="item.disabled === undefined || item.disabled ? item.title as string : (item.title + (menuConfig.disabledTips || ''))"
-                           @dragstart="dragStart(item, $event)"
-                           @click.prevent="dragStart(item, $event)">
+                      <div
+                        class="graphics-icon-icon-item"
+                        v-if="item.show !== undefined ? item.show : true"
+                        :draggable="item.disabled !== undefined ? item.disabled : true"
+                        :key="item.key ? item.key : index"
+                        :title="
+                          item.disabled === undefined || item.disabled
+                            ? (item.title as string)
+                            : item.title + (menuConfig.disabledTips || '')
+                        "
+                        @dragstart="dragStart(item, $event)"
+                        @click.prevent="dragStart(item, $event)"
+                      >
                         <template v-if="item.data && (item.data as any)['image']">
-                          <img :src="(item.data as any)['image']" alt="" :title="(item.data as any)['label']"/>
+                          <img :src="(item.data as any)['image']" alt="" :title="(item.data as any)['label']" />
                         </template>
                         <template v-else-if="item.data && (item.data as any)['video']">
-                          <icon-font :name="item.icon" size="2em"/>
+                          <icon-font :name="item.icon" size="2em" />
                         </template>
                         <template v-else-if="item.data && (item.data as any)['item.data.svg']">
                           <div v-html="(item.data as any)['item.data.svg']"></div>
@@ -77,7 +85,7 @@
                 </t-submenu>
               </template>
               <template v-if="activeTabsKey === 'my_component'">
-                <p>我的组件</p>
+                <p>我的组件开发中</p>
               </template>
             </div>
           </t-tab-panel>
@@ -86,53 +94,62 @@
       <div class="graphics-manage">
         <t-button @click="openGraphicsManage">
           <template #icon>
-            <grid-view-icon/>
+            <grid-view-icon />
           </template>
           管理图元
         </t-button>
         <graphics-more-modal
-            :visible="graphicsMoreVisible"
-            :model-value="graphicGroupsList"
-            @close="openGraphicsManage"
+          :visible="graphicsMoreVisible"
+          :model-value="graphicGroupsList"
+          @close="openGraphicsManage"
         />
       </div>
     </t-menu>
   </div>
 </template>
 <script setup lang="ts">
-import {ref} from "vue";
-import {isDisplayTitle} from "../core/editor2d-communal";
-import {GRAPHICS_CONFIG as graphicsConfig, GRAPHICS_TABS_CONFIG as graphicsTabsConfig,} from "../graphics/graphics"
-import {TabsProps} from "tdesign-vue-next";
-import {MenuValue} from "tdesign-vue-next/es/menu/type";
-import {ExtendGraphic} from "../core/editor2d-graphics.ts"
-import {GridViewIcon, IconFont, SearchIcon} from "tdesign-icons-vue-next";
-import GraphicsMoreModal from "../graphics/graphics-more-modal.vue";
-import {Editor2DConfig, PropsTab, PropsTabsConfig} from "../core/editor2d-global-type";
+import { ref, inject, computed } from 'vue'
+import { isDisplayTitle } from '../core/editor2d-communal'
+import { GRAPHICS_CONFIG as graphicsConfig, GRAPHICS_TABS_CONFIG as graphicsTabsConfig } from '../graphics/graphics'
+import { MenuValue, TabsProps } from 'tdesign-vue-next'
+import { ExtendGraphic } from '../core/editor2d-graphics.ts'
+import { GridViewIcon, IconFont, SearchIcon } from 'tdesign-icons-vue-next'
+import GraphicsMoreModal from '../graphics/graphics-more-modal.vue'
+import { Editor2DConfig, PropsTab, PropsTabsConfig } from '../core/editor2d-global-type'
+
+// 注入编辑器实例
+const editor = inject<any>('editorCore')
+
+// 使用计算属性确保响应式
+const editorCore = computed(() => editor?.value)
 
 // 图元组件分类配置
-let tabsConfig = ref<PropsTabsConfig>(graphicsTabsConfig).value;
+let tabsConfig = ref<PropsTabsConfig>(graphicsTabsConfig).value
 // 图元组件分类数据
-let panelTabs = ref<Array<PropsTab>>(tabsConfig.tabs ?? []);
+let panelTabs = ref<Array<PropsTab>>(tabsConfig.tabs ?? [])
 // 激活图元分类
-let activeTabsKey = ref(tabsConfig.activeKey);
+let activeTabsKey = ref(tabsConfig.activeKey)
 // 图元菜单配置
-let menuConfig = ref<Editor2DConfig>(graphicsConfig).value;
+let menuConfig = ref<Editor2DConfig>(graphicsConfig).value
 // 显示菜单图标
-let displayMenuIcon = menuConfig.displayMenuIcon ?? true;
+let displayMenuIcon = menuConfig.displayMenuIcon ?? true
 // 显示菜单标题
-let displayMenuTitle = menuConfig.displayMenuTitle ?? true;
+let displayMenuTitle = menuConfig.displayMenuTitle ?? true
 // 源图元菜单数据
-let originalGraphicGroups = new ExtendGraphic().getGraphic();
+let originalGraphicGroups = new ExtendGraphic().getGraphic()
 // 图元菜单数据（搜索）
-let graphicGroupsList = ref(originalGraphicGroups);
+let graphicGroupsList = ref(originalGraphicGroups)
 // 激活图元菜单
-let activeMenuKeys = ref<Array<MenuValue>>([]);
+let activeMenuKeys = ref<Array<MenuValue>>([])
 // 搜索关键字
-let keyword = ref('');
+let keyword = ref('')
 // 显示管理图元
-let graphicsMoreVisible = ref<boolean>(false);
+let graphicsMoreVisible = ref<boolean>(false)
 
+// 获取meta2d实例的辅助函数
+function getMeta2d() {
+  return editorCore.value?.getContext()?.meta2d
+}
 
 /**
  * 拖拽事件
@@ -141,25 +158,41 @@ let graphicsMoreVisible = ref<boolean>(false);
  */
 const dragStart = (elem: any, e: any) => {
   if (!elem) {
-    return;
+    return
   }
-  e.stopPropagation();
+  e.stopPropagation()
+
+  // 使用EditorCore处理拖拽
+  if (editorCore.value) {
+    // 通过事件系统处理
+    console.log('[Graphics] 使用EditorCore处理拖拽:', elem.data.name)
+    const eventBus = editorCore.value.getEventBus()
+    eventBus.emitSync('graphics:drag-start', {
+      element: elem,
+      data: elem.data,
+      event: e
+    })
+  }
+
   // 拖拽事件
   if (e instanceof DragEvent) {
     // 设置拖拽数据
-    e.dataTransfer?.setData("Meta2d", JSON.stringify(elem.data));
+    e.dataTransfer?.setData('Meta2d', JSON.stringify(elem.data))
   } else {
     // 支持单击添加图元。平板模式
-    meta2d.canvas.addCaches = [elem.data];
+    const meta2d = getMeta2d()
+    if (meta2d) {
+      meta2d.canvas.addCaches = [elem.data]
+    }
   }
-};
+}
 
 /**
  * 过滤组件
  */
 function filterComponent() {
   if (activeTabsKey.value == 'sys_component') {
-    filterGraphicGroups();
+    filterGraphicGroups()
   }
 }
 
@@ -167,39 +200,39 @@ function filterComponent() {
  * 筛选过滤组件
  */
 function filterGraphicGroups() {
-  let searchContent = keyword.value;
+  let searchContent = keyword.value
   if (searchContent) {
-    let list = originalGraphicGroups ?? [];
-    let array: any = [];
+    let list = originalGraphicGroups ?? []
+    let array: any = []
     for (let i = 0; i < list.length; i++) {
       if ((list[i].title as string).indexOf(searchContent) !== -1) {
         array.push({
           ...list[i],
-        });
+        })
       }
       const foundInList = list[i].children?.filter((item: any) => {
-        let {title} = item;
-        if (title.indexOf("http") !== -1) {
-          const decodedStr = decodeURIComponent(title);
+        let { title } = item
+        if (title.indexOf('http') !== -1) {
+          const decodedStr = decodeURIComponent(title)
           if (decodedStr.indexOf(searchContent) !== -1) {
-            return item;
+            return item
           }
         } else {
           if (title.indexOf(searchContent) !== -1) {
-            return item;
+            return item
           }
         }
-      });
+      })
       if (foundInList?.length !== 0) {
         array.push({
           ...list[i],
           children: [...(foundInList || [])],
-        });
+        })
       }
     }
-    graphicGroupsList.value = array;
+    graphicGroupsList.value = array
   } else {
-    graphicGroupsList.value = originalGraphicGroups;
+    graphicGroupsList.value = originalGraphicGroups
   }
 }
 
@@ -208,30 +241,28 @@ function filterGraphicGroups() {
  * @param currentIndex 当前索引
  * @param targetIndex 目标索引
  */
-const onGraphicsTabDragend: TabsProps['onDragSort'] = ({currentIndex, targetIndex}) => {
-  [panelTabs.value[currentIndex], panelTabs.value[targetIndex]] = [
+const onGraphicsTabDragend: TabsProps['onDragSort'] = ({ currentIndex, targetIndex }) => {
+  ;[panelTabs.value[currentIndex], panelTabs.value[targetIndex]] = [
     panelTabs.value[targetIndex],
     panelTabs.value[currentIndex],
-  ];
-};
+  ]
+}
 
 /**
  * 2D编辑器图形库菜单选项卡选中事件
  * @param activeTabs 激活卡片
  */
-const onGraphicsTabChange: TabsProps['onChange'] = (activeTabs: string | number) => (activeTabsKey.value = activeTabs);
+const onGraphicsTabChange: TabsProps['onChange'] = (activeTabs: string | number) => (activeTabsKey.value = activeTabs)
 
 /**
  * 打开管理图元页面
  */
 function openGraphicsManage() {
-  graphicsMoreVisible.value = !graphicsMoreVisible.value;
+  graphicsMoreVisible.value = !graphicsMoreVisible.value
 }
-
 </script>
 
 <style scoped lang="less">
-
 .editor2d-graphics {
   display: flex;
   flex-direction: column;
