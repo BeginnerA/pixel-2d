@@ -6,6 +6,8 @@
 
 Pixel-2D is a powerful online 2D graphics editor that provides rich drawing tools and graphic libraries, supporting various diagram types such as flowcharts, sequence diagrams, class diagrams, and more. Built on modern frontend technology stack, it offers a smooth editing experience and powerful extensibility.
 
+🚀 **Online Preview**: [https://beginnera.github.io/pixel-2d/#/](https://beginnera.github.io/pixel-2d/#/)
+
 ## ✨ Core Features
 
 ### 🎨 Rich Graphics Library
