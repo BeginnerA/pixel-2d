@@ -34,46 +34,52 @@ Pixel-2D is a powerful online 2D graphics editor that provides rich drawing tool
 - **Communication Protocols**: WebSocket, MQTT, HTTP communication support
 
 ### 🏗️ Modern Architecture
-- **Modular Design**: Clear layered architecture
-- **TypeScript**: Full type support
+- **Modular Design**: Clear layered architecture based on core modules
+- **Dependency Injection**: IoC container managing service lifecycles
+- **Event-driven**: Global event bus supporting publish-subscribe pattern
+- **Command Pattern**: Complete undo/redo system
+- **State Management**: Finite state machine managing editor states
+- **Renderer Abstraction**: Multi-renderer support (Canvas/SVG)
+- **Plugin System**: Extensible plugin architecture
+- **TypeScript**: Full type safety support
 - **Responsive Layout**: Adaptive to various screen sizes
-- **Plugin-based Extension**: Custom plugin support
 
 ## 🚀 Technology Stack
 
 ### Core Framework
-- **Vue 3.5.12** - Progressive JavaScript Framework
-- **TypeScript 5.6.3** - JavaScript Superset
-- **Vite 5.4.11** - Next Generation Frontend Build Tool
+- **Vue 3.5.28** - Progressive JavaScript Framework
+- **TypeScript 5.9.3** - JavaScript Superset
+- **Vite 7.3.1** - Next Generation Frontend Build Tool
 
 ### UI Component Library
-- **TDesign Vue Next 1.10.1** - Tencent Enterprise Design System
-- **TDesign Icons** - Icon Component Library
+- **TDesign Vue Next 1.18.2** - Tencent Enterprise Design System
+- **TDesign Icons 0.4.2** - Icon Component Library
 
 ### Graphics Engine
-- **Meta2D Core 1.0.59** - Core Rendering Engine
+- **Meta2D Core 1.1.14** - Core Rendering Engine
 - **Meta2D Graphics Suite**
-  - Flow Diagram - Flowcharts
-  - Sequence Diagram - Sequence Diagrams
-  - Class Diagram - Class Diagrams
-  - Activity Diagram - Activity Diagrams
-  - Chart Diagram - Charts
-  - Form Diagram - Forms
-  - FTA Diagram - Fault Tree Analysis
+  - Flow Diagram 1.0.2 - Flowcharts
+  - Sequence Diagram 1.0.1 - Sequence Diagrams
+  - Class Diagram 1.0.2 - Class Diagrams
+  - Activity Diagram 1.0.1 - Activity Diagrams
+  - Chart Diagram 1.0.20 - Charts
+  - Form Diagram 1.0.29 - Forms
+  - FTA Diagram 1.0.1 - Fault Tree Analysis
+  - Le5le Charts 1.0.5 - Chart Components
 
 ### State Management
-- **Pinia 2.2.6** - Official Vue State Management
-- **Vue Router 4.4.5** - Official Router Manager
+- **Pinia 3.0.4** - Official Vue State Management
+- **Vue Router 5.0.2** - Official Router Manager
 
 ### Development Tools
-- **ESLint** - Code Quality Checking
-- **Prettier** - Code Formatting
-- **Monaco Editor** - Code Editor
+- **ESLint 10.0.0** - Code Quality Checking
+- **Prettier 3.8.1** - Code Formatting
+- **Monaco Editor 0.55.1** - Code Editor
 
 ## 📦 Installation
 
 ### Requirements
-- Node.js >= 18.0.0
+- Node.js >= 20.19.0
 - pnpm >= 8.0.0 (recommended)
 
 ### Clone Repository
@@ -139,16 +145,21 @@ pixel-2d/
 │   │   │   ├── graphics/           # Graphics library panel
 │   │   │   ├── editor-view/        # Canvas editing area
 │   │   │   ├── props/              # Property configuration panel
-│   │   │   └── core/               # Core logic
+│   │   │   ├── core/               # Editor core logic
+│   │   │   └── edit-code/          # Code editor
 │   │   └── common/         # Common components
 │   ├── core/               # Core architecture modules
 │   │   ├── Editor.ts               # Editor core class
-│   │   ├── ioc/                    # IoC container
+│   │   ├── ioc/                    # IoC container (dependency injection)
 │   │   ├── events/                 # Event bus
 │   │   ├── commands/               # Command system
 │   │   ├── plugins/                # Plugin system
-│   │   ├── canvas/                 # Renderer abstraction
-│   │   └── state/                  # State machine
+│   │   ├── renderer/               # Renderer abstraction layer
+│   │   ├── state/                  # State machine management
+│   │   ├── services/               # Core services
+│   │   ├── lifecycle/              # Lifecycle management
+│   │   ├── constants/              # Constant definitions
+│   │   └── utils/                  # Core utilities
 │   ├── views/              # Page views
 │   ├── router/             # Router configuration
 │   ├── stores/             # Pinia state management
@@ -166,8 +177,53 @@ pixel-2d/
 └── README.md               # Project documentation
 ```
 
+### Core Architecture Modules
+
+The project adopts a modern enterprise-level architecture design:
+
+#### 1. Dependency Injection Container (IoC)
+- **Function**: Manage service lifecycles and dependencies
+- **Features**: Supports singleton, transient, and scoped lifecycle modes, automatic circular dependency resolution
+- **File**: `src/core/ioc/Container.ts`
+
+#### 2. Event Bus
+- **Function**: Implement global event publish-subscribe mechanism
+- **Features**: Priority sorting, event interceptors, asynchronous processing, one-time listening
+- **File**: `src/core/events/EventBus.ts`
+
+#### 3. Command System
+- **Function**: Implement complete undo/redo functionality
+- **Features**: Command pattern based, supports command history, transaction processing, maximum history limit
+- **File**: `src/core/commands/CommandManager.ts`
+
+#### 4. Plugin System
+- **Function**: Support feature extension and custom plugins
+- **Features**: Modular plugin architecture, plugin state management and lifecycle support
+- **File**: `src/core/plugins/PluginManager.ts`
+
+#### 5. Renderer Abstraction
+- **Function**: Provide unified rendering interface
+- **Features**: Multi-renderer support (Canvas/SVG), abstract renderer base class
+- **File**: `src/core/renderer/BaseRenderer.ts`
+
+#### 6. State Management
+- **Function**: Manage various editor states
+- **Features**: Finite state machine based, supports state transitions and hook functions
+- **File**: `src/core/state/StateMachine.ts`
+
+#### 7. Service Registry
+- **Function**: Unified service registration and resolution mechanism
+- **Features**: Centralized core service management, simplified service acquisition
+- **File**: `src/core/services/ServiceRegistry.ts`
+
+#### 8. Lifecycle Management
+- **Function**: Manage complete editor lifecycle
+- **Features**: Standardized lifecycle hooks, supports initialization, destruction phases
+- **File**: `src/core/lifecycle/EditorLifecycle.ts`
+
 ## ✅ Implemented Features
 
+### Basic Features
 - [x] Project framework setup
 - [x] Editor basic layout
 - [x] Element management (drawings, system components, custom components)
@@ -180,6 +236,8 @@ pixel-2d/
 - [x] Minimap navigation
 - [x] Canvas state management (edit, preview, lock)
 - [x] Real-time preview
+
+### Configuration Features
 - [x] Element appearance configuration
 - [x] Dynamic event configuration
 - [x] Animation effect configuration
@@ -188,17 +246,34 @@ pixel-2d/
 - [x] Custom animation frames
 - [x] Dynamic data binding
 - [x] Layout and structure settings
+
+### Communication Features
 - [x] WebSocket communication binding
+- [x] MQTT protocol support
+- [x] HTTP protocol support
+
+### Core Architecture
+- [x] Dependency injection container (IoC)
+- [x] Global event bus
+- [x] Command pattern system
+- [x] Plugin management system
+- [x] Multi-renderer support
+- [x] State machine management
+- [x] Service registry center
+- [x] Lifecycle management
 
 ## 🚧 Features in Development
 
 - [ ] Canvas right-click menu
 - [ ] Complete drawing communication binding
-- [ ] MQTT protocol support
-- [ ] HTTP protocol support
 - [ ] Common element library expansion
 - [ ] Global menu configuration optimization
 - [ ] Image resource management optimization
+- [ ] More graphics library expansion
+- [ ] Performance optimization and memory management
+- [ ] Internationalization support
+- [ ] Theme system
+- [ ] Shortcut key system improvement
 
 ## 🔧 Configuration
 
