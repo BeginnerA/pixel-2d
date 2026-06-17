@@ -29,8 +29,9 @@ jobs:
         with:
           node-version: '22'
 
+      # 修复：添加 --config.minimumReleaseAge=0 绕过新包发布时间校验
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --config.minimumReleaseAge=0
 
       - name: Build with Vite
         run: pnpm run build
