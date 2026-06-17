@@ -29,13 +29,7 @@ jobs:
         with:
           node-version: '22'
 
-      # 提前设置pnpm全局配置，允许构建脚本、关闭最小发布时间限制
-      - name: Set pnpm config
-        run: |
-          pnpm config set minimumReleaseAge 0
-          pnpm config set scripts.allow-builds true
-          pnpm config set scripts.allow-all true
-
+      # 直接纯净安装，配置文件已处理2个安全策略
       - name: Install dependencies
         run: pnpm install
 
@@ -45,7 +39,7 @@ jobs:
           NODE_ENV: production
           BASE_URL: /${{ github.event.repository.name }}/
 
-      # 添加 .nojekyll 文件防止 Jekyll 处理
+      # 添加 .nojekyll 防止静态资源404
       - name: Create .nojekyll
         run: echo '' > dist/.nojekyll
 
