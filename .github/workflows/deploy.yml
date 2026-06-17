@@ -31,6 +31,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+        env:
+          # 跳过最小发布年龄检查，避免 CI 中因包发布时间太新导致安装失败
+          PNPM_CONFIG_MINIMUM_RELEASE_AGE: 0
 
       - name: Build with Vite
         run: pnpm run build
