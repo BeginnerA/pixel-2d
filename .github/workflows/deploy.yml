@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        run: npm install -g pnpm
+        run: npm install -g pnpm@10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

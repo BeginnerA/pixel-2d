@@ -4,9 +4,6 @@
   "description": "专业的2D图形编辑器 - 基于Vue3 + TypeScript + Meta2D",
   "private": true,
   "type": "module",
-  "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
-  },
   "scripts": {
     "dev": "vite --host",
     "start": "pnpm dev",
