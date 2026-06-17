@@ -29,7 +29,11 @@ jobs:
         with:
           node-version: '22'
 
-      # 修复：添加 --config.minimumReleaseAge=0 绕过新包发布时间校验
+      # 1. 先放行所有构建脚本（解决 esbuild 报错）
+      - name: Approve dependency build scripts
+        run: pnpm approve-builds --all
+
+      # 2. 安装依赖，关闭最小发布年龄校验（--config.minimumReleaseAge=0）
       - name: Install dependencies
         run: pnpm install --config.minimumReleaseAge=0
 
