@@ -23,6 +23,9 @@ import {
 import { EventBridgeService, createEventBridge } from './services/EventBridgeService'
 import { AddPenCommand, DeletePensCommand, UpdatePenCommand, ClearCanvasCommand, ZoomCommand } from './commands/CommonCommands'
 import type { IPlugin } from './plugins/PluginManager'
+import { ShortcutManager } from './shortcuts/ShortcutManager'
+import { defaultShortcuts } from './shortcuts/default-shortcuts'
+import { PerformanceMonitor, MemoryManager } from './performance'
 
 /**
  * 编辑器核心类
@@ -44,8 +47,17 @@ export class EditorCore implements IEditorCore {
   /** 事件桥接服务实例 */
   private eventBridgeService!: EventBridgeService
 
+  /** 快捷键管理器实例 */
+  private shortcutManager!: ShortcutManager
+
   /** 渲染器实例 */
   private renderer!: IRenderer
+
+  /** 性能监控实例 */
+  private performanceMonitor!: PerformanceMonitor
+
+  /** 内存管理实例 */
+  private memoryManager!: MemoryManager
 
   /** 状态机实例 */
   private stateMachine!: StateMachine
@@ -85,6 +97,11 @@ export class EditorCore implements IEditorCore {
     this.eventBus = this.container.resolve(EventBus)
     this.commandManager = this.container.resolve(CommandManager)
     this.pluginManager = this.container.resolve(PluginManager)
+
+    // 创建快捷键管理器（依赖事件总线）
+    this.shortcutManager = new ShortcutManager(this.eventBus, { autoListen: true })
+    this.performanceMonitor = this.container.resolve(PerformanceMonitor)
+    this.memoryManager = this.container.resolve(MemoryManager)
 
     // 创建事件桥接服务
     this.eventBridgeService = createEventBridge(this.eventBus)
@@ -126,6 +143,11 @@ export class EditorCore implements IEditorCore {
       [EventBus]
     )
 
+    // 注册性能监控（单例）
+    this.container.registerSingleton(PerformanceMonitor, PerformanceMonitor)
+
+    // 注册内存管理器（单例）
+    this.container.registerSingleton(MemoryManager, MemoryManager)
   }
 
   /**
@@ -256,6 +278,17 @@ export class EditorCore implements IEditorCore {
       // 初始化插件管理器
       await this.pluginManager.initialize()
 
+      // 加载默认快捷键
+      this.shortcutManager.registerMany(defaultShortcuts)
+      console.log(`[Editor] 已加载 ${defaultShortcuts.length} 个默认快捷键`)
+
+      // 启动性能监控（开发环境默认开启，生产环境可通过配置关闭）
+      const enablePerf = import.meta.env.DEV || import.meta.env.VITE_ENABLE_PERF === 'true'
+      if (enablePerf) {
+        this.performanceMonitor.start()
+        this.memoryManager.start()
+      }
+
       // 标记为已初始化
       this.context.initialized = true
 
@@ -279,10 +312,25 @@ export class EditorCore implements IEditorCore {
     }
 
     try {
+      // 停止性能监控并输出报告
+      if (this.performanceMonitor.isActive()) {
+        const report = this.performanceMonitor.getReport()
+        console.log('[Editor] 性能监控报告:', report)
+        this.performanceMonitor.stop()
+      }
+
+      // 销毁内存管理器（检测泄漏）
+      const leaked = this.memoryManager.getLeakedListeners()
+      if (leaked.length > 0) {
+        console.warn(`[Editor] 检测到 ${leaked.length} 个未销毁的事件监听器`)
+      }
+      this.memoryManager.destroy()
+
       // 销毁渲染器
       this.renderer.destroy()
 
       // 销毁各模块
+      this.shortcutManager.destroy()
       this.pluginManager.destroy()
       this.commandManager.destroy()
       this.stateMachine.destroy()
@@ -490,10 +538,31 @@ export class EditorCore implements IEditorCore {
   }
 
   /**
+   * 获取快捷键管理器
+   */
+  getShortcutManager(): ShortcutManager {
+    return this.shortcutManager
+  }
+
+  /**
    * 获取上下文
    */
   getContext(): EditorContext {
     return this.context
+  }
+
+  /**
+   * 获取性能监控实例
+   */
+  getPerformanceMonitor(): PerformanceMonitor {
+    return this.performanceMonitor
+  }
+
+  /**
+   * 获取内存管理实例
+   */
+  getMemoryManager(): MemoryManager {
+    return this.memoryManager
   }
 }
 

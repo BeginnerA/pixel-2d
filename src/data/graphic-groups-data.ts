@@ -197,6 +197,42 @@ export const CUSTOM_GRAPHIC_GROUPS: Array<any> = [
       mkdir: 'IoT-水槽',
     },
   },
+  {
+    title: '化工流程',
+    show: true,
+    children: [],
+    file: {
+      import: import.meta.glob(`@/assets/editor2d/graphics/化工流程/*`),
+      mkdir: '化工流程',
+    },
+  },
+  {
+    title: '电力系统',
+    show: true,
+    children: [],
+    file: {
+      import: import.meta.glob(`@/assets/editor2d/graphics/电力系统/*`),
+      mkdir: '电力系统',
+    },
+  },
+  {
+    title: '给排水',
+    show: true,
+    children: [],
+    file: {
+      import: import.meta.glob(`@/assets/editor2d/graphics/给排水/*`),
+      mkdir: '给排水',
+    },
+  },
+  {
+    title: '消防系统',
+    show: true,
+    children: [],
+    file: {
+      import: import.meta.glob(`@/assets/editor2d/graphics/消防系统/*`),
+      mkdir: '消防系统',
+    },
+  },
 ]
 
 importFile()

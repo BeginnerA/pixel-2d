@@ -52,3 +52,22 @@ export {
   ZoomCommand,
 } from './commands/CommonCommands'
 
+// 快捷键系统
+export { ShortcutManager } from './shortcuts/ShortcutManager'
+export { defaultShortcuts } from './shortcuts/default-shortcuts'
+export {
+  SCOPE_LABELS,
+  SCOPE_PRIORITY,
+} from './shortcuts/shortcut-types'
+export type {
+  ShortcutBinding,
+  KeyCombination,
+  ShortcutScope,
+  ShortcutConflict,
+  ShortcutManagerOptions,
+} from './shortcuts/shortcut-types'
+
+// 主题系统
+export { ThemeManager, createThemeManager, lightTheme, darkTheme } from './theme'
+export type { ThemeMode, ResolvedTheme, ThemeChangedPayload } from './theme'
+

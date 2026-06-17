@@ -20,7 +20,7 @@
           <template v-if="isDisplayTitle(displayMenuTitle, menu.title, menu.icon)" #title>
             <span>{{ menu.title }}</span>
           </template>
-          <template v-for="item in menu.children">
+          <template v-for="item in menu.children" :key="item.key">
             <t-menu-item
               v-if="item.show !== undefined ? item.show : true"
               :value="item.key"
@@ -31,8 +31,9 @@
                 <div v-if="item?.icon?.indexOf('iconfont') !== -1" :class="item.icon" style="font-size: 14px"></div>
                 <t-icon v-else :name="item.icon" />
               </template>
-              <span v-if="!isFunction(item.title) && isDisplayTitle(displayMenuTitle, item.title, item.icon)">
+              <span v-if="!isFunction(item.title) && isDisplayTitle(displayMenuTitle, item.title, item.icon)" class="menu-item-label">
                 {{ item.title }}
+                <span v-if="item.shortcut" class="shortcut-label">{{ item.shortcut }}</span>
               </span>
               <template v-if="isFunction(item.title)">
                 <component :is="item.title as Function" />
@@ -50,8 +51,9 @@
             <div v-if="menu?.icon?.indexOf('iconfont') !== -1" :class="menu.icon" style="font-size: 14px"></div>
             <t-icon v-else :name="menu.icon" />
           </template>
-          <span v-if="!isFunction(menu.title) && isDisplayTitle(displayMenuTitle, menu.title, menu.icon)">
+          <span v-if="!isFunction(menu.title) && isDisplayTitle(displayMenuTitle, menu.title, menu.icon)" class="menu-item-label">
             {{ menu.title }}
+            <span v-if="menu.shortcut" class="shortcut-label">{{ menu.shortcut }}</span>
           </span>
           <template v-if="isFunction(menu.title)">
             <component :is="menu.title as Function" />
@@ -77,7 +79,7 @@
           <template v-if="isDisplayTitle(displayMenuTitle, menu.title, menu.icon)" #title>
             <span>{{ menu.title }}</span>
           </template>
-          <template v-for="item in menu.children">
+          <template v-for="item in menu.children" :key="item.key">
             <t-menu-item
               v-if="item.show !== undefined ? item.show : true"
               :value="item.key"
@@ -90,8 +92,9 @@
                   <use :xlink:href="'#' + item.icon"></use>
                 </svg>
               </template>
-              <span v-if="!isFunction(item.title) && isDisplayTitle(displayMenuTitle, item.title, item.icon)">
+              <span v-if="!isFunction(item.title) && isDisplayTitle(displayMenuTitle, item.title, item.icon)" class="menu-item-label">
                 {{ item.title }}
+                <span v-if="item.shortcut" class="shortcut-label">{{ item.shortcut }}</span>
               </span>
               <template v-if="isFunction(item.title)">
                 <component :is="item.title as Function" />
@@ -109,8 +112,9 @@
             <div v-if="menu?.icon?.indexOf('iconfont') !== -1" :class="menu.icon" style="font-size: 14px"></div>
             <t-icon v-else :name="menu.icon" />
           </template>
-          <span v-if="!isFunction(menu.title) && isDisplayTitle(displayMenuTitle, menu.title, menu.icon)">
+          <span v-if="!isFunction(menu.title) && isDisplayTitle(displayMenuTitle, menu.title, menu.icon)" class="menu-item-label">
             {{ menu.title }}
+            <span v-if="menu.shortcut" class="shortcut-label">{{ menu.shortcut }}</span>
           </span>
           <template v-if="isFunction(menu.title)">
             <component :is="menu.title as Function" />
@@ -118,7 +122,7 @@
         </t-menu-item>
       </template>
 
-      <!-- 扩展菜单 -->
+      <!-- 扩展菜单 + 操作区 -->
       <template #operations>
         <template v-for="menu in extendMenuList" :key="menu.key">
           <t-submenu
@@ -133,7 +137,7 @@
             <template v-if="isDisplayTitle(displayMenuTitle, menu.title, menu.icon)" #title>
               <span>{{ menu.title }}</span>
             </template>
-            <template v-for="item in menu.children">
+            <template v-for="item in menu.children" :key="item.key">
               <t-menu-item
                 v-if="item.show !== undefined ? item.show : true"
                 :value="item.key"
@@ -144,8 +148,9 @@
                   <div v-if="item?.icon?.indexOf('iconfont') !== -1" :class="item.icon" style="font-size: 14px"></div>
                   <t-icon v-else :name="item.icon" />
                 </template>
-                <span v-if="!isFunction(item.title) && isDisplayTitle(displayMenuTitle, item.title, item.icon)">
+                <span v-if="!isFunction(item.title) && isDisplayTitle(displayMenuTitle, item.title, item.icon)" class="menu-item-label">
                   {{ item.title }}
+                  <span v-if="item.shortcut" class="shortcut-label">{{ item.shortcut }}</span>
                 </span>
                 <template v-if="isFunction(item.title)">
                   <component :is="item.title as Function" />
@@ -163,24 +168,30 @@
               <div v-if="menu?.icon?.indexOf('iconfont') !== -1" :class="menu.icon" style="font-size: 14px"></div>
               <t-icon v-else :name="menu.icon" />
             </template>
-            <span v-if="!isFunction(menu.title) && isDisplayTitle(displayMenuTitle, menu.title, menu.icon)">
+            <span v-if="!isFunction(menu.title) && isDisplayTitle(displayMenuTitle, menu.title, menu.icon)" class="menu-item-label">
               {{ menu.title }}
+              <span v-if="menu.shortcut" class="shortcut-label">{{ menu.shortcut }}</span>
             </span>
             <template v-if="isFunction(menu.title)">
               <component :is="menu.title as Function" />
             </template>
           </t-menu-item>
         </template>
+
+        <!-- 预览按钮 -->
         <t-menu-item value="runPreview" @click="runPreview">
           <template #icon>
             <t-icon name="browse" />
           </template>
         </t-menu-item>
+
+        <!-- 编辑器设置弹窗 -->
         <header-extend-modal :visible="extendVisible" @close="closeGraphicsManage" />
       </template>
     </t-head-menu>
   </div>
 </template>
+
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue'
 import { RouteRecordRaw, useRouter } from 'vue-router'
@@ -190,7 +201,7 @@ import {
   dispatchFunc,
   EXTEND_VISIBLE as extendVisible,
   FUNC_MENU_CONFIG as funcMenuConfig,
-  FUNC_MENUS as funcMenus,
+  MenuRegistry,
 } from '../header/header'
 import HeaderExtendModal from '../header/header-extend-modal.vue'
 import { Editor2DCache } from '../core/editor2d-local-storage'
@@ -206,13 +217,12 @@ const editorCore = computed(() => editor?.value)
 
 // 菜单配置
 let menuConfig = ref<Editor2DConfig>(funcMenuConfig).value
-let menus = funcMenus ? funcMenus : { appMenu: [], editorMenu: [], extendMenu: [] }
-// 应用菜单列表
-let appMenuList = ref<Array<Editor2DPropsMenu>>(menus.appMenu)
-// 编辑器画布菜单列表
-let editorMenuList = ref<Array<Editor2DPropsMenu>>(menus.editorMenu)
-// 扩展菜单列表
-let extendMenuList = ref<Array<Editor2DPropsMenu>>(menus.extendMenu)
+
+// 使用 MenuRegistry 的响应式计算属性
+const appMenuList = MenuRegistry.computed.appMenus()
+const editorMenuList = MenuRegistry.computed.editorMenus()
+const extendMenuList = MenuRegistry.computed.extendMenus()
+
 // 显示菜单图标
 let displayMenuIcon = menuConfig.displayMenuIcon ?? true
 // 显示菜单标题
@@ -232,8 +242,9 @@ function menuDispatchFunc(
   e: DragEvent | MouseEvent
 ) {
   if (parentItem != null && menuType === 'canvas') {
-    // 修改选中功能图标
-    editorMenuList.value.forEach((item) => {
+    // 修改选中功能图标（从响应式计算属性中获取实际列表进行更新）
+    const list = MenuRegistry.getAllMenus('editor')
+    list.forEach((item) => {
       if (item.key === parentItem.key) {
         if (activeItem.icon) {
           item.icon = activeItem.icon
@@ -359,5 +370,27 @@ function addDetailRoute(path: string, component: () => Promise<any>) {
   vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
+}
+
+// 菜单项标签（含快捷键）
+.menu-item-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 16px;
+}
+
+// 快捷键标签样式
+.shortcut-label {
+  font-size: 11px;
+  color: var(--td-text-color-placeholder);
+  font-family: monospace;
+  background: var(--td-bg-color-secondarycontainer);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--td-border-level-1-color);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 </style>

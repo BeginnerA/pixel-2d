@@ -6,6 +6,7 @@
       :visible="visible"
       :destroy-on-close="true"
       :close-btn="true"
+      @confirm="handleConfirm"
       @close="onCancel"
     >
       <template #header>
@@ -52,10 +53,16 @@
               <t-card header="待开发"> 待开发 </t-card>
             </div>
           </t-tab-panel>
+          <t-tab-panel value="menuConfig">
+            <template #label>
+              <t-icon name="setting" class="tabs-icon-margin" />
+              菜单配置
+            </template>
+            <div class="modal-tabs-content">
+              <menu-config ref="menuConfigRef" @confirm="onMenuConfigConfirm" />
+            </div>
+          </t-tab-panel>
         </t-tabs>
-      </template>
-      <template #footer>
-        <div></div>
       </template>
     </t-dialog>
   </div>
@@ -65,16 +72,31 @@
 import { TabsProps } from 'tdesign-vue-next'
 import { computed, reactive, ref } from 'vue'
 import GenerateForm from '../../common/form-list/GenerateForm.vue'
+import MenuConfig from './MenuConfig.vue'
 import { Editor2D } from '../core/editor2d'
 import { Editor2DPropsMenu } from '../core/editor2d-global-type'
 import { globalEditor2DProps } from '../core/editor2d-global-data'
 import { Editor2DCache } from '@/components/editor2d/core/editor2d-local-storage.ts'
+
+const menuConfigRef = ref<{ save: () => void } | null>(null)
 
 // 2d编辑器全局配置
 let m = reactive(globalEditor2DProps)
 // 激活卡片
 let activeTabsKey = ref<string | number>('canvas')
 let editor2d = new Editor2D()
+
+// 菜单配置保存回调
+function onMenuConfigConfirm() {
+  // 菜单配置已保存，无需额外操作
+}
+
+function handleConfirm() {
+  if (activeTabsKey.value === 'menuConfig') {
+    menuConfigRef.value?.save()
+  }
+  onCancel()
+}
 
 defineProps({
   visible: {

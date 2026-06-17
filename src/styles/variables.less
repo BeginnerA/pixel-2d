@@ -1,6 +1,9 @@
 /**
  * Less 全局变量配置
  * @description Pixel-2D 项目的全局样式变量
+ *
+ * 注意：LESS变量作为默认值/回退使用，运行时优先使用CSS Custom Properties（:root中定义）。
+ * 组件中应优先使用 var(--xxx) 形式引用主题变量，以支持运行时主题切换。
  */
 
 // ==================== 主题色彩 ====================
@@ -82,3 +85,140 @@
 @z-index-modal: 1050;
 @z-index-popover: 1060;
 @z-index-tooltip: 1070;
+
+// ==================== CSS Custom Properties ====================
+// 运行时主题切换使用CSS变量，LESS变量作为回退默认值。
+// ThemeManager 会在运行时动态覆盖这些CSS变量。
+
+:root {
+  // 主题色彩
+  --color-primary: @primary-color;
+  --color-success: @success-color;
+  --color-warning: @warning-color;
+  --color-error: @error-color;
+  --color-info: @info-color;
+
+  // 中性色
+  --color-gray-1: @gray-1;
+  --color-gray-2: @gray-2;
+  --color-gray-3: @gray-3;
+  --color-gray-4: @gray-4;
+  --color-gray-5: @gray-5;
+  --color-gray-6: @gray-6;
+  --color-gray-7: @gray-7;
+  --color-gray-8: @gray-8;
+  --color-gray-9: @gray-9;
+  --color-gray-10: @gray-10;
+
+  // 文字颜色
+  --text-color-primary: @text-color-primary;
+  --text-color-secondary: @text-color-secondary;
+  --text-color-placeholder: @text-color-placeholder;
+  --text-color-disabled: @text-color-disabled;
+  --text-color-anti: @text-color-anti;
+
+  // 背景色
+  --bg-color-page: @bg-color-page;
+  --bg-color-container: @bg-color-container;
+  --bg-color-component: @bg-color-component;
+  --bg-color-secondary-container: @bg-color-secondarycontainer;
+
+  // 边框
+  --border-color: @border-color;
+  --border-color-separator: @border-color-separator;
+
+  // 阴影
+  --shadow-1: @shadow-1;
+  --shadow-2: @shadow-2;
+  --shadow-3: @shadow-3;
+
+  // 字体
+  --font-family: @font-family;
+  --font-size-base: @font-size-base;
+  --font-size-s: @font-size-s;
+  --font-size-m: @font-size-m;
+  --font-size-l: @font-size-l;
+  --font-size-xl: @font-size-xl;
+
+  // 间距
+  --spacer: @spacer;
+  --spacer-1: @spacer-1;
+  --spacer-2: @spacer-2;
+  --spacer-3: @spacer-3;
+  --spacer-4: @spacer-4;
+  --spacer-5: @spacer-5;
+
+  // 圆角
+  --border-radius-small: @border-radius-small;
+  --border-radius-default: @border-radius-default;
+  --border-radius-medium: @border-radius-medium;
+  --border-radius-large: @border-radius-large;
+
+  // 动画
+  --anim-duration-base: @anim-duration-base;
+  --anim-duration-slow: @anim-duration-slow;
+  --anim-time-fn-ease-in: @anim-time-fn-ease-in;
+  --anim-time-fn-ease-out: @anim-time-fn-ease-out;
+  --anim-time-fn-ease-in-out: @anim-time-fn-ease-in-out;
+
+  // 层级
+  --z-index-base: @z-index-base;
+  --z-index-dropdown: @z-index-dropdown;
+  --z-index-fixed: @z-index-fixed;
+  --z-index-modal-backdrop: @z-index-modal-backdrop;
+  --z-index-modal: @z-index-modal;
+  --z-index-popover: @z-index-popover;
+  --z-index-tooltip: @z-index-tooltip;
+
+  // 画布（Meta2D）
+  --canvas-bg-color: #ffffff;
+  --canvas-grid-color: #f0f0f0;
+}
+
+// 暗色主题 CSS 变量覆盖
+[data-theme="dark"] {
+  // 主题色彩
+  --color-primary: #4582e6;
+  --color-success: #2ba471;
+  --color-warning: #e37318;
+  --color-error: #d54941;
+  --color-info: #4582e6;
+
+  // 中性色
+  --color-gray-1: #1f1f1f;
+  --color-gray-2: #292929;
+  --color-gray-3: #333333;
+  --color-gray-4: #3d3d3d;
+  --color-gray-5: #4b4b4b;
+  --color-gray-6: #5e5e5e;
+  --color-gray-7: #777777;
+  --color-gray-8: #8b8b8b;
+  --color-gray-9: #a6a6a6;
+  --color-gray-10: #c5c5c5;
+
+  // 文字颜色
+  --text-color-primary: rgba(255, 255, 255, 0.9);
+  --text-color-secondary: rgba(255, 255, 255, 0.6);
+  --text-color-placeholder: rgba(255, 255, 255, 0.4);
+  --text-color-disabled: rgba(255, 255, 255, 0.26);
+  --text-color-anti: #ffffff;
+
+  // 背景色
+  --bg-color-page: #1a1a1a;
+  --bg-color-container: #242424;
+  --bg-color-component: #2c2c2c;
+  --bg-color-secondary-container: #1f1f1f;
+
+  // 边框
+  --border-color: #3d3d3d;
+  --border-color-separator: #333333;
+
+  // 阴影
+  --shadow-1: 0 1px 10px rgba(0, 0, 0, 0.35), 0 4px 5px rgba(0, 0, 0, 0.32), 0 2px 4px -1px rgba(0, 0, 0, 0.22);
+  --shadow-2: 0 3px 14px 2px rgba(0, 0, 0, 0.35), 0 8px 10px 1px rgba(0, 0, 0, 0.36), 0 5px 5px -3px rgba(0, 0, 0, 0.28);
+  --shadow-3: 0 6px 30px 5px rgba(0, 0, 0, 0.35), 0 16px 24px 2px rgba(0, 0, 0, 0.34), 0 8px 10px -5px rgba(0, 0, 0, 0.22);
+
+  // 画布
+  --canvas-bg-color: #1e1e1e;
+  --canvas-grid-color: #333333;
+}

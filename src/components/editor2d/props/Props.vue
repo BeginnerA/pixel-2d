@@ -20,7 +20,11 @@
               <map-drawing-config />
             </template>
             <template v-if="activeTabsKey === 'map_comm_config'">
-              <map-comm-config />
+              <communication-panel />
+            </template>
+
+            <template v-if="activeTabsKey === 'pen_comm_binding_config'">
+              <communication-panel />
             </template>
 
             <template v-if="activeTabsKey === 'pen_appearance_config'">
@@ -51,6 +55,7 @@
       </t-tabs>
     </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -59,6 +64,7 @@ import { TabsProps } from 'tdesign-vue-next'
 import MapDrawingConfig from '../props/map-props/map-drawing-config.vue'
 import MapLayoutConfig from '../props/map-props/map-layout-config.vue'
 import MapCommConfig from '../props/map-props/map-comm-config.vue'
+import CommunicationPanel from '../props/communication/CommunicationPanel.vue'
 import MapStructureConfig from '../props/map-props/map-structure-config.vue'
 import PenAppearanceConfig from '../props/pen-props/pen-appearance-config.vue'
 import PenEventConfig from '../props/pen-props/pen-event-config.vue'
@@ -171,7 +177,7 @@ function showTabs(keys: Array<string>) {
  * 初始化
  */
 function init() {
-  showTabs(['map_drawing_config', 'map_comm_config', 'map_layout_config', 'map_structure_config'])
+  showTabs(['map_drawing_config', 'map_comm_config', 'pen_comm_binding_config', 'map_layout_config', 'map_structure_config'])
 }
 
 /**
@@ -208,6 +214,7 @@ function handleSelectionChange(pens: any[]) {
       'pen_event_config',
       'pen_effect_config',
       'pen_data_config',
+      'pen_comm_binding_config',
       'map_structure_config',
     ])
   } else if (multiPenStatus.value) {
@@ -353,4 +360,5 @@ onMounted(() => {
 ::-webkit-scrollbar-track {
   background-color: transparent !important;
 }
+
 </style>

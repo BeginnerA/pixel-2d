@@ -18,6 +18,7 @@
         </t-aside>
       </t-layout>
     </t-layout>
+    <ShortcutHelp ref="shortcutHelp" />
   </div>
 </template>
 
@@ -26,6 +27,7 @@ import Props from './props/Props.vue'
 import Header from './header/Header.vue'
 import Graphics from './graphics/Graphics.vue'
 import EditorView from './editor-view/EditorView.vue'
+import ShortcutHelp from './shortcuts/ShortcutHelp.vue'
 import { defineComponent, onBeforeMount, provide, ref } from 'vue'
 import { Editor2DProps } from './editor2d-type'
 import { ExtendGraphic } from './core/editor2d-graphics.ts'
@@ -34,11 +36,12 @@ import { createEditor, EditorCore } from '@/core'
 
 export default defineComponent({
   name: 'Pixel2DEditor',
-  components: { Props, Header, Graphics, EditorView },
+  components: { Props, Header, Graphics, EditorView, ShortcutHelp },
   props: Editor2DProps,
   setup(props) {
     const editor = ref<EditorCore | null>(null)
     const isReady = ref(false)
+    const shortcutHelp = ref<any>(null)
 
     const init = async (props: any) => {
       // 使用 !== undefined 替代 ! 防止 false 值被错误判断
@@ -66,6 +69,10 @@ export default defineComponent({
     const onEditorReady = (editorCore: EditorCore) => {
       editor.value = editorCore
       isReady.value = true
+      // 将编辑器核心传递给快捷键帮助组件
+      if (shortcutHelp.value) {
+        shortcutHelp.value.setEditorCore(editorCore)
+      }
       console.log('[Pixel2D] 编辑器已就绪')
     }
 
@@ -78,6 +85,10 @@ export default defineComponent({
 
     // 提供编辑器实例给子组件
     provide('editorCore', editor)
+
+    return {
+      shortcutHelp,
+    }
   },
 })
 </script>

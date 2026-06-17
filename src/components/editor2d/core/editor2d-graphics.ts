@@ -973,6 +973,677 @@ const DEFAULT_GRAPHIC_GROUPS: Array<Editor2DPropsMenu> = [
 ]
 
 /**
+ * 扩展图元组件数据 - 箭头类
+ */
+const ARROW_GRAPHIC_GROUPS: Array<Editor2DPropsMenu> = [
+  {
+    key: 'arrow-graphic-1',
+    title: '箭头',
+    children: [
+      {
+        key: 'arrow-graphic-1-1',
+        title: '单向箭头',
+        icon: 'l-arrow-right',
+        data: {
+          name: 'line',
+          width: 150,
+          height: 1,
+          text: '',
+          fromArrow: '',
+          toArrow: 'triangleSolid',
+          lineWidth: 2,
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'arrow-graphic-1-2',
+        title: '双向箭头',
+        icon: 'l-twoway-arrow',
+        data: {
+          name: 'line',
+          width: 150,
+          height: 1,
+          text: '',
+          fromArrow: 'triangleSolid',
+          toArrow: 'triangleSolid',
+          lineWidth: 2,
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'arrow-graphic-1-3',
+        title: '曲线箭头',
+        icon: 'l-curve',
+        data: {
+          name: 'curve',
+          width: 150,
+          height: 60,
+          text: '',
+          fromArrow: '',
+          toArrow: 'triangleSolid',
+          lineWidth: 2,
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'arrow-graphic-1-4',
+        title: '粗箭头',
+        icon: 'l-arrow-right',
+        data: {
+          name: 'rightArrow',
+          width: 150,
+          height: 60,
+          text: '粗箭头',
+          background: '#1890ff',
+          color: '#1890ff',
+          lineWidth: 0,
+          textColor: '#fff',
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 0 },
+            { x: 0.5, y: 1 },
+          ],
+        },
+      },
+      {
+        key: 'arrow-graphic-1-5',
+        title: '粗左箭头',
+        icon: 'l-arrow-left',
+        data: {
+          name: 'leftArrow',
+          width: 150,
+          height: 60,
+          text: '粗左箭头',
+          background: '#52c41a',
+          color: '#52c41a',
+          lineWidth: 0,
+          textColor: '#fff',
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 0 },
+            { x: 0.5, y: 1 },
+          ],
+        },
+      },
+      {
+        key: 'arrow-graphic-1-6',
+        title: '粗双向箭头',
+        icon: 'l-twoway-arrow',
+        data: {
+          name: 'twowayArrow',
+          width: 160,
+          height: 60,
+          text: '双向',
+          background: '#fa8c16',
+          color: '#fa8c16',
+          lineWidth: 0,
+          textColor: '#fff',
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 0 },
+            { x: 0.5, y: 1 },
+          ],
+        },
+      },
+    ],
+  },
+]
+
+/**
+ * 扩展图元组件数据 - 标注类
+ */
+const ANNOTATION_GRAPHIC_GROUPS: Array<Editor2DPropsMenu> = [
+  {
+    key: 'annotation-graphic-1',
+    title: '标注',
+    children: [
+      {
+        key: 'annotation-graphic-1-1',
+        title: '文字标注',
+        icon: 'l-msg',
+        data: {
+          name: 'message',
+          width: 140,
+          height: 80,
+          text: '文字标注',
+          textTop: -0.1,
+          background: '#fffbe6',
+          color: '#faad14',
+          textColor: '#333',
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'annotation-graphic-1-2',
+        title: '气泡标注',
+        icon: 'l-msg',
+        data: {
+          name: 'message',
+          width: 140,
+          height: 80,
+          text: '气泡标注',
+          textTop: -0.1,
+          borderRadius: 0.1,
+          background: '#e6f7ff',
+          color: '#1890ff',
+          textColor: '#333',
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'annotation-graphic-1-3',
+        title: '带指引线标注',
+        icon: 'l-flow-comment',
+        data: {
+          name: 'flowComment',
+          width: 120,
+          height: 80,
+          text: '指引线标注',
+          background: '#f6ffed',
+          color: '#52c41a',
+          textColor: '#333',
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.3 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.3 },
+          ],
+        },
+      },
+      {
+        key: 'annotation-graphic-1-4',
+        title: '警告标注',
+        icon: 'l-msg',
+        data: {
+          name: 'message',
+          width: 140,
+          height: 80,
+          text: '⚠ 警告信息',
+          textTop: -0.1,
+          background: '#fff2f0',
+          color: '#ff4d4f',
+          textColor: '#ff4d4f',
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+    ],
+  },
+]
+
+/**
+ * 扩展图元组件数据 - 表格类
+ */
+const TABLE_GRAPHIC_GROUPS: Array<Editor2DPropsMenu> = [
+  {
+    key: 'table-graphic-1',
+    title: '表格',
+    children: [
+      {
+        key: 'table-graphic-1-1',
+        title: '简单表格',
+        icon: 'iconfont icon-table-2',
+        data: {
+          name: 'table',
+          width: 300,
+          height: 200,
+          text: '表格',
+          externElement: true,
+          rows: 4,
+          cols: 3,
+          data: [
+            ['列标题1', '列标题2', '列标题3'],
+            ['数据1', '数据2', '数据3'],
+            ['数据4', '数据5', '数据6'],
+            ['数据7', '数据8', '数据9'],
+          ],
+        },
+      },
+      {
+        key: 'table-graphic-1-2',
+        title: '2列表格',
+        icon: 'iconfont icon-table-2',
+        data: {
+          name: 'table',
+          width: 240,
+          height: 160,
+          text: '表格',
+          externElement: true,
+          rows: 4,
+          cols: 2,
+          data: [
+            ['标题', '值'],
+            ['属性1', '100'],
+            ['属性2', '200'],
+            ['属性3', '300'],
+          ],
+        },
+      },
+    ],
+  },
+]
+
+/**
+ * 扩展图元组件数据 - 仪表类
+ */
+const GAUGE_GRAPHIC_GROUPS: Array<Editor2DPropsMenu> = [
+  {
+    key: 'gauge-graphic-1',
+    title: '仪表',
+    children: [
+      {
+        key: 'gauge-graphic-1-1',
+        title: '进度条',
+        icon: 'iconfont icon-sliders-h',
+        data: {
+          name: 'slider',
+          width: 240,
+          height: 30,
+          text: '',
+          value: 65,
+          min: 0,
+          max: 100,
+          barHeight: 8,
+          color: '#1890ff',
+          background: '#e0e0e0',
+          textColor: '#333',
+          unit: '%',
+          textWidth: 50,
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'gauge-graphic-1-2',
+        title: '圆形进度',
+        icon: 'l-circle',
+        data: {
+          name: 'circle',
+          width: 100,
+          height: 100,
+          text: '75%',
+          lineWidth: 8,
+          color: '#1890ff',
+          background: 'transparent',
+          textColor: '#1890ff',
+          fontSize: 18,
+          fontWeight: 'bold',
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'gauge-graphic-1-3',
+        title: '温度计',
+        icon: 'l-column-chart',
+        data: {
+          name: 'cylinder',
+          width: 40,
+          height: 120,
+          text: '36°',
+          background: '#ff4d4f',
+          color: '#ff4d4f',
+          textColor: '#ff4d4f',
+          textBottom: -20,
+          lineWidth: 2,
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'gauge-graphic-1-4',
+        title: '半圆仪表',
+        icon: 'l-dashboard-chart',
+        data: {
+          name: 'rectangle',
+          width: 160,
+          height: 80,
+          text: '68%',
+          borderRadius: 0.5,
+          background: 'linear-gradient(180deg, #1890ff 0%, #52c41a 100%)',
+          lineWidth: 0,
+          textColor: '#fff',
+          fontSize: 20,
+          fontWeight: 'bold',
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+    ],
+  },
+]
+
+/**
+ * 扩展图元组件数据 - Badge类
+ */
+const BADGE_GRAPHIC_GROUPS: Array<Editor2DPropsMenu> = [
+  {
+    key: 'badge-graphic-1',
+    title: 'Badge',
+    children: [
+      {
+        key: 'badge-graphic-1-1',
+        title: '状态徽标-绿',
+        icon: 'l-circle',
+        data: {
+          name: 'circle',
+          width: 12,
+          height: 12,
+          text: '',
+          background: '#52c41a',
+          color: '#52c41a',
+          lineWidth: 0,
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'badge-graphic-1-2',
+        title: '状态徽标-红',
+        icon: 'l-circle',
+        data: {
+          name: 'circle',
+          width: 12,
+          height: 12,
+          text: '',
+          background: '#ff4d4f',
+          color: '#ff4d4f',
+          lineWidth: 0,
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'badge-graphic-1-3',
+        title: '数字徽标',
+        icon: 'l-circle',
+        data: {
+          name: 'circle',
+          width: 24,
+          height: 24,
+          text: '99',
+          background: '#ff4d4f',
+          color: '#ff4d4f',
+          lineWidth: 0,
+          textColor: '#fff',
+          fontSize: 12,
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'badge-graphic-1-4',
+        title: '标签徽标',
+        icon: 'l-rectangle',
+        data: {
+          name: 'rectangle',
+          width: 60,
+          height: 22,
+          text: '标签',
+          borderRadius: 0.5,
+          background: '#1890ff',
+          color: '#1890ff',
+          lineWidth: 0,
+          textColor: '#fff',
+          fontSize: 12,
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 0 },
+            { x: 0.5, y: 1 },
+          ],
+        },
+      },
+      {
+        key: 'badge-graphic-1-5',
+        title: '成功徽标',
+        icon: 'l-rectangle',
+        data: {
+          name: 'rectangle',
+          width: 60,
+          height: 22,
+          text: '成功',
+          borderRadius: 0.5,
+          background: '#52c41a',
+          color: '#52c41a',
+          lineWidth: 0,
+          textColor: '#fff',
+          fontSize: 12,
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 0 },
+            { x: 0.5, y: 1 },
+          ],
+        },
+      },
+      {
+        key: 'badge-graphic-1-6',
+        title: '警告徽标',
+        icon: 'l-rectangle',
+        data: {
+          name: 'rectangle',
+          width: 60,
+          height: 22,
+          text: '警告',
+          borderRadius: 0.5,
+          background: '#faad14',
+          color: '#faad14',
+          lineWidth: 0,
+          textColor: '#fff',
+          fontSize: 12,
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 0 },
+            { x: 0.5, y: 1 },
+          ],
+        },
+      },
+      {
+        key: 'badge-graphic-1-7',
+        title: '错误徽标',
+        icon: 'l-rectangle',
+        data: {
+          name: 'rectangle',
+          width: 60,
+          height: 22,
+          text: '错误',
+          borderRadius: 0.5,
+          background: '#ff4d4f',
+          color: '#ff4d4f',
+          lineWidth: 0,
+          textColor: '#fff',
+          fontSize: 12,
+          anchors: [
+            { x: 0, y: 0.5 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 0 },
+            { x: 0.5, y: 1 },
+          ],
+        },
+      },
+    ],
+  },
+]
+
+/**
+ * 扩展图元组件数据 - 容器类
+ */
+const CONTAINER_GRAPHIC_GROUPS: Array<Editor2DPropsMenu> = [
+  {
+    key: 'container-graphic-1',
+    title: '容器',
+    children: [
+      {
+        key: 'container-graphic-1-1',
+        title: '面板容器',
+        icon: 'l-rectangle',
+        data: {
+          name: 'rectangle',
+          width: 300,
+          height: 200,
+          text: '面板标题',
+          textBaseline: 'top',
+          textTop: 10,
+          textAlign: 'left',
+          textLeft: 10,
+          borderRadius: 0.02,
+          background: '#fafafa',
+          color: '#d9d9d9',
+          textColor: '#333',
+          fontSize: 14,
+          fontWeight: 'bold',
+          lineWidth: 1,
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'container-graphic-1-2',
+        title: '卡片容器',
+        icon: 'l-rectangle',
+        data: {
+          name: 'rectangle',
+          width: 240,
+          height: 160,
+          text: '卡片标题',
+          textBaseline: 'top',
+          textTop: 12,
+          textAlign: 'left',
+          textLeft: 12,
+          borderRadius: 0.04,
+          background: '#ffffff',
+          color: '#e8e8e8',
+          textColor: '#333',
+          fontSize: 14,
+          fontWeight: 'bold',
+          lineWidth: 1,
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'container-graphic-1-3',
+        title: '分组容器',
+        icon: 'l-rectangle',
+        data: {
+          name: 'rectangle',
+          width: 300,
+          height: 200,
+          text: '分组',
+          textBaseline: 'top',
+          textTop: -20,
+          textAlign: 'left',
+          textLeft: 0,
+          borderRadius: 0.02,
+          background: 'rgba(24,144,255,0.05)',
+          color: '#1890ff',
+          textColor: '#1890ff',
+          fontSize: 13,
+          lineWidth: 1,
+          dash: 4,
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+      {
+        key: 'container-graphic-1-4',
+        title: '深色面板',
+        icon: 'l-rectangle',
+        data: {
+          name: 'rectangle',
+          width: 300,
+          height: 200,
+          text: '深色面板',
+          textBaseline: 'top',
+          textTop: 10,
+          textAlign: 'left',
+          textLeft: 10,
+          borderRadius: 0.02,
+          background: '#1f1f1f',
+          color: '#434343',
+          textColor: '#ffffff',
+          fontSize: 14,
+          fontWeight: 'bold',
+          lineWidth: 1,
+          anchors: [
+            { x: 0.5, y: 0 },
+            { x: 1, y: 0.5 },
+            { x: 0.5, y: 1 },
+            { x: 0, y: 0.5 },
+          ],
+        },
+      },
+    ],
+  },
+]
+
+/**
  * Echarts 图表组件数据
  */
 const ECHARTS_GRAPHIC_GROUPS: Array<Editor2DPropsMenu> = [
@@ -1249,6 +1920,14 @@ abstract class Graphic {
     if (defaultOptions.enableEchartsPen) {
       manager.addMenus(ECHARTS_GRAPHIC_GROUPS)
     }
+    // 注册扩展图元组
+    manager.addMenus(ARROW_GRAPHIC_GROUPS)
+    manager.addMenus(ANNOTATION_GRAPHIC_GROUPS)
+    manager.addMenus(TABLE_GRAPHIC_GROUPS)
+    manager.addMenus(GAUGE_GRAPHIC_GROUPS)
+    manager.addMenus(BADGE_GRAPHIC_GROUPS)
+    manager.addMenus(CONTAINER_GRAPHIC_GROUPS)
+
     if (defaultOptions.extendPen && defaultOptions.extendPen.length > 0) {
       manager.addMenus(defaultOptions.extendPen)
     }

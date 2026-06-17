@@ -24,6 +24,11 @@ export const PROPS_TABS_CONFIG: PropsTabsConfig = {
       title: '通信',
     },
     {
+      key: 'pen_comm_binding_config',
+      label: '绑定',
+      title: '通信绑定',
+    },
+    {
       key: 'pen_appearance_config',
       label: '外观',
       title: '外观',
