@@ -29,8 +29,9 @@ jobs:
         with:
           node-version: '22'
 
+      # 关键修复：--config.minimumReleaseAge=0 放行刚发布的包；--allow-build 放行esbuild等构建脚本
       - name: Install dependencies
-        run: pnpm install --config.minimumReleaseAge=0 --config.scripts.allow-builds=true
+        run: pnpm install --config.minimumReleaseAge=0 --allow-build
 
       - name: Build with Vite
         run: pnpm run build
@@ -38,7 +39,7 @@ jobs:
           NODE_ENV: production
           BASE_URL: /${{ github.event.repository.name }}/
 
-      # 添加 .nojekyll 文件防止 Jekyll 处理
+      # 添加 .nojekyll 文件防止 Jekyll 静态资源解析异常
       - name: Create .nojekyll
         run: echo '' > dist/.nojekyll
 
