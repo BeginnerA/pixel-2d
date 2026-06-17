@@ -29,7 +29,6 @@ jobs:
         with:
           node-version: '22'
 
-      # 直接纯净安装，配置文件已处理2个安全策略
       - name: Install dependencies
         run: pnpm install
 
@@ -39,7 +38,7 @@ jobs:
           NODE_ENV: production
           BASE_URL: /${{ github.event.repository.name }}/
 
-      # 添加 .nojekyll 防止静态资源404
+      # 添加 .nojekyll 文件防止 Jekyll 处理
       - name: Create .nojekyll
         run: echo '' > dist/.nojekyll
 
