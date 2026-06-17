@@ -29,9 +29,15 @@ jobs:
         with:
           node-version: '22'
 
-      # 关键修复：--config.minimumReleaseAge=0 放行刚发布的包；--allow-build 放行esbuild等构建脚本
+      # 提前设置pnpm全局配置，允许构建脚本、关闭最小发布时间限制
+      - name: Set pnpm config
+        run: |
+          pnpm config set minimumReleaseAge 0
+          pnpm config set scripts.allow-builds true
+          pnpm config set scripts.allow-all true
+
       - name: Install dependencies
-        run: pnpm install --config.minimumReleaseAge=0 --allow-build
+        run: pnpm install
 
       - name: Build with Vite
         run: pnpm run build
@@ -39,7 +45,7 @@ jobs:
           NODE_ENV: production
           BASE_URL: /${{ github.event.repository.name }}/
 
-      # 添加 .nojekyll 文件防止 Jekyll 静态资源解析异常
+      # 添加 .nojekyll 文件防止 Jekyll 处理
       - name: Create .nojekyll
         run: echo '' > dist/.nojekyll
 
